@@ -1,0 +1,51 @@
+# Environment and secrets
+.venv/
+.env
+.env.*
+
+
+# Markdown files
+CLAUDE.md
+MODEL-AVAILABLE.md
+NEXT-SESSION-PICKUP.md 
+NOTES-PROJECT-DEVELOPEMENT.md
+TASK_DEEP_LEARNING_PROJECT.md
+
+
+# Data: the Kaggle CSVs are not committed, see data/README.md
+data/raw/*
+!data/raw/.gitkeep
+# ...except the gzipped competition CSVs. 8.9 MB and 5.9 MB against 73 MB and
+# 49 MB, and pandas reads them as they are, so a clone on Colab or Kaggle has
+# the data immediately. train.csv.gz is what the project trains on; test.csv.gz
+# is the unlabelled leaderboard set, carried for a Kaggle submission.
+!data/raw/train.csv.gz
+!data/raw/test.csv.gz
+data/processed/*
+!data/processed/.gitkeep
+DEVELOPMENT_RECORD_NLPS1.1/
+NOTES-DEVELOPMENT-NLPS2P1/
+
+# Training artifacts
+checkpoints/
+lightning_logs/
+runs/
+reports/figures/*
+!reports/figures/.gitkeep
+# ...except the final run's three plots. They are what the report points at, so
+# a reader of the repository should not have to retrain to see them. The
+# baseline and -quick figures stay out.
+!reports/figures/*_final.png
+
+# The upload bundle, rebuilt by `make bundle`
+bidanu-NLP.AI.1.5.zip
+
+# Caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.DS_Store
+*.swp
