@@ -1,0 +1,38 @@
+# environment
+.venv/
+.env
+.env.*
+
+
+# markdown: working notes stay local, the reviewer-facing documents are committed
+*.md
+!README.md
+!Mathematical_theoretical_analysis.md
+# the task itself, so a reviewer can read the brief the project answers
+!AE.NLP.2.5.md
+# the generated findings, re-included below the *.md rule that would catch them
+!reports/findings.md
+
+
+# caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+
+# data: committed so the reviewer can reproduce the numbers without a pipeline
+# run. data/raw/wikinews is a clone with its own .git, which git would store as
+# a submodule pointer rather than the corpus, so it stays out.
+data/raw/
+
+# working notes
+DEVELOPMENT_RECORD_NLPS2.1/
+NOTES-DEVELOPMENT-NLPS2P2/
+
+# generated reports: figures and findings are committed so the results are
+# readable on GitHub without running the seven-minute pipeline first
+
+# os
+.DS_Store

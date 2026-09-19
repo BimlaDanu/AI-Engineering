@@ -1,0 +1,30 @@
+{
+  "en": {
+    "n_train": 2021,
+    "n_test": 674,
+    "accuracy": 0.92,
+    "macro_f1": 0.9,
+    "baseline_macro_f1": 0.174
+  },
+  "es": {
+    "n_train": 579,
+    "n_test": 194,
+    "accuracy": 0.897,
+    "macro_f1": 0.867,
+    "baseline_macro_f1": 0.173
+  },
+  "fr": {
+    "n_train": 537,
+    "n_test": 180,
+    "accuracy": 0.917,
+    "macro_f1": 0.891,
+    "baseline_macro_f1": 0.185
+  },
+  "de": {
+    "n_train": 440,
+    "n_test": 147,
+    "accuracy": 0.905,
+    "macro_f1": 0.87,
+    "baseline_macro_f1": 0.175
+  }
+}

@@ -1,0 +1,112 @@
+[project]
+name = "wikinews-nlp"
+version = "0.1.0"
+description = "NER, summarization and similarity analysis over the multilingual WikiNews corpus"
+readme = "README.md"
+requires-python = ">=3.11,<3.12"
+
+# Runtime dependencies, grouped by the pipeline stage that needs them.
+dependencies = [
+    # corpus handling and tabular analysis
+    "pandas>=2.2",
+    "numpy>=1.26,<2.2",
+    "pyarrow>=16.0",
+    # renders the result tables as markdown for reports/findings.md
+    "tabulate>=0.9",
+    # preprocessing + named entity recognition (requirements 1-3)
+    "spacy>=3.8",
+    # extractive summarization: TextRank runs on a sentence graph (requirement 4)
+    "networkx>=3.3",
+    # abstractive summarization through the OpenRouter gateway (requirement 4)
+    "openai>=1.40",
+    "python-dotenv>=1.0",
+    # readability / style statistics reported alongside the summaries
+    "textstat>=0.7.4",
+    # multilingual sentence embeddings for the similarity scores (requirement 5)
+    "sentence-transformers>=3.0",
+    # topic prediction and clustering of entities
+    "scikit-learn>=1.5",
+    # figures written to reports/figures
+    "matplotlib>=3.9",
+]
+
+[dependency-groups]
+# Pinned as direct URLs: a pipeline fetched with `spacy download` is declared
+# nowhere, so the next `uv sync` prunes it and the run dies on a missing model.
+models = [
+    "en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl",
+    "es_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/es_core_news_sm-3.8.0/es_core_news_sm-3.8.0-py3-none-any.whl",
+    "fr_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/fr_core_news_sm-3.8.0/fr_core_news_sm-3.8.0-py3-none-any.whl",
+    "de_core_news_sm @ https://github.com/explosion/spacy-models/releases/download/de_core_news_sm-3.8.0/de_core_news_sm-3.8.0-py3-none-any.whl",
+]
+
+dev = [
+    "pytest>=8.3",
+    "ruff>=0.6",
+    "mypy>=1.11",
+    "pandas-stubs>=2.2",
+    "ipykernel>=6.29",
+    "jupyterlab>=4.2",
+]
+
+[tool.uv]
+default-groups = ["dev", "models"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+
+# ─────────────────── tooling ───────────────────
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors      -- PEP8
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # import ordering
+    "UP",  # pyupgrade
+    "B",   # bugbear
+    "SIM", # simplify
+    "D",   # pydocstyle -- public functions must carry a docstring
+    "ANN", # flake8-annotations -- type hints are mandatory in this project
+]
+ignore = [
+    "D203",  # conflicts with D211 (no blank line before class docstring)
+    "D213",  # conflicts with D212 (summary on the first line)
+    "ANN401",  # allow typing.Any where a library genuinely returns it
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Tests name what they check; src/ keeps both rules in full force.
+"tests/*" = ["D100", "D103", "ANN001", "ANN201", "ANN202"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src", "tests"]
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+module = "tests.*"
+disallow_untyped_defs = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "slow: tests that run a full pipeline stage over the real corpus",
+    "live: tests that call the OpenRouter API",
+]

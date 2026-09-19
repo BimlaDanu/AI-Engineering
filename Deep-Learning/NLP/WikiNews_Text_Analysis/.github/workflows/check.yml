@@ -1,0 +1,51 @@
+# Quality gate: what `make check` runs locally, minus the tests needing the
+# corpus or an API key.
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Set up Python
+        # Reads .python-version, so CI and the laptop agree on the interpreter.
+        run: uv python install
+
+      - name: Install dependencies
+        run: make sync-ci
+
+      - name: Check the spaCy pipelines installed
+        # Declared in the `models` group, so sync already installed them.
+        run: make models
+
+      - name: Lint
+        run: make lint
+
+      - name: Type check
+        run: make typecheck
+
+      - name: Test
+        run: make test-fast
+
+      - name: Report versions
+        if: always()
+        run: make versions
