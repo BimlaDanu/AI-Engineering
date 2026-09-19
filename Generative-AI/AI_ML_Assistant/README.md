@@ -1,6 +1,6 @@
-# 🧠 Synapse — *where AI, ML & deep learning connect*
+# 🧠 Synapse: *where AI, ML & deep learning connect*
 
-[![CI — lint · format · tests](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml)
+[![CI: lint, format, tests](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml)
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://docs.streamlit.io/)
@@ -11,122 +11,106 @@
 [![uv](https://img.shields.io/badge/uv-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
 [![Ruff](https://img.shields.io/badge/Ruff-D7FF64?logo=ruff&logoColor=black)](https://docs.astral.sh/ruff/)
 
-Every badge above links to that tool's own documentation, so the stack can be explored
-without first reading the rest of this page.
+Synapse is a **domain-specialised [RAG](https://arxiv.org/abs/2005.11401) chatbot** for machine
+learning, deep learning and AI engineering questions. It retrieves answers from a curated
+knowledge base and cites its sources. When it does not know something, it says so.
 
+> **Grounded · Cited · Honest.** Every factual answer points at the passages it came from, or
+> states its uncertainty. Off-topic questions and prompt-injection attempts are refused.
 
-Synapse is a **domain-specialised RAG chatbot** that assists with machine learning, deep learning, and AI engineering concepts. Instead of guessing, it **retrieves** answers from a curated knowledge base and **cites its sources**. When it doesn't know the answer, it says so plainly rather than inventing one.
-
-> **Grounded · Cited · Honest** — every factual answer either points to the passages it came
-> from, or states its uncertainty. Off-topic questions and prompt-injection attempts are
-> refused.
-
-Built with **[Python 3.11+](https://www.python.org/downloads/), [Streamlit](https://docs.streamlit.io/), [LangChain](https://python.langchain.com/docs/introduction/), [LangGraph](https://langchain-ai.github.io/langgraph/), and [Chroma](https://docs.trychroma.com/)**. This project was developed as part of the Turing College Sprint 2 programme, based on the assignment brief in [125.md](125.md).
+Each badge links to that tool's documentation. I wrote this for the Turing College Sprint 2
+programme, against the brief in [125.md](125.md).
 
 <details>
-<summary><b>New to the terms?</b> — A simply put English glossary (click to expand)</summary>
+<summary><b>New to the terms?</b> A plain-English glossary with links (click to expand)</summary>
 
-The following terminology is not required to use the app. It is included to make the rest of this README easier to read, regardless of your background.
-
-| Term | In simple terms|
-|---|---|
-| **RAG(retrieval-augmented generation)**  | Before answering, the app looks up relevant passages in its own library and answers *from* them — grounded, not guessed. |
-| **Knowledge base (KB)** | That curated library of documents the app answers from. |
-| **Embedding** | A piece of text turned into a list of numbers, so the app can measure which passages are closest *in meaning*. |
-| **Chunk** | A document sliced into smaller passages — the unit that actually gets retrieved and cited. |
-| **Vector store** (Chroma) | The database that holds those number-lists and finds the closest matches to a question. |
-| **Hybrid search / BM25** | Combines meaning-based matching with plain keyword matching, so exact terms (an acronym, a name) aren't missed. |
-| **Corrective RAG (CRAG)** | If the looked-up passages look too weak, the app fetches more from outside (arXiv, the web) instead of bluffing. |
-| **Structured output** | The model is made to reply in a fixed, checkable shape (like a form), so the app never has to guess-parse free text. |
-| **LangGraph** | A library for writing the pipeline as an explicit graph of steps you can draw and inspect. |
-| **MCP** (Model Context Protocol) | A standard way to let the app borrow extra tools from a remote server. |
-| **RAGAs** | A way to *score* answer quality (faithfulness, relevancy, precision, recall) using an LLM as the judge. |
-| **Prompt injection** | A message that tries to trick the model into ignoring its rules; the app screens for it before doing anything else. |
+| Term | In simple terms | Go deeper |
+|---|---|---|
+| **RAG** (retrieval-augmented generation) | The app looks up relevant passages in its own library and answers *from* them. Grounded rather than guessed. | [Lewis et al., 2020](https://arxiv.org/abs/2005.11401) · [LangChain tutorial](https://python.langchain.com/docs/tutorials/rag/) |
+| **Knowledge base (KB)** | The curated library of documents it answers from. | [`data/`](data/) |
+| **Embedding** | Text turned into a list of numbers, so the app can measure which passages are closest *in meaning*. | [OpenAI guide](https://platform.openai.com/docs/guides/embeddings) |
+| **Chunk** | A document sliced into smaller passages. The unit that gets retrieved and cited. | [LangChain splitters](https://python.langchain.com/docs/concepts/text_splitters/) |
+| **Vector store** (Chroma) | The database holding those number-lists, which finds the closest matches. | [Chroma docs](https://docs.trychroma.com/) |
+| **Hybrid search / BM25** | Meaning-based matching combined with keyword matching, so acronyms and names are not missed. | [Okapi BM25](https://en.wikipedia.org/wiki/Okapi_BM25) |
+| **Corrective RAG (CRAG)** | When the passages found look too weak, fetch more from outside instead of bluffing. | [Yan et al., 2024](https://arxiv.org/abs/2401.15884) |
+| **Structured output** | The model replies in a fixed, checkable shape, so the app never guess-parses prose. | [OpenAI guide](https://platform.openai.com/docs/guides/structured-outputs) |
+| **LangGraph** | Writing the pipeline as an explicit graph of steps you can draw and inspect. | [LangGraph docs](https://langchain-ai.github.io/langgraph/) |
+| **MCP** (Model Context Protocol) | A standard way to borrow tools from a remote server. | [modelcontextprotocol.io](https://modelcontextprotocol.io/) |
+| **RAGAs** | Scoring answer quality (faithfulness, relevancy, precision, recall) with an LLM as judge. | [RAGAs docs](https://docs.ragas.io/) |
+| **Prompt injection** | A message that tries to trick the model into ignoring its rules. | [OWASP LLM01](https://genai.owasp.org/llmrisk/llm01-prompt-injection/) |
 
 </details>
 
 ---
 
 ## 📚 Contents
-1. [Get started in 4 simple steps](#get-started-in-4-simple-steps)
-2. [What makes Synapse different?](#what-makes-synapse-different)
+1. [Get started](#get-started)
+2. [What makes Synapse different](#what-makes-synapse-different)
 3. [How Synapse finds an answer](#how-synapse-finds-an-answer)
 4. [Features at a glance](#features-at-a-glance)
-5. [Explore the workspaces](#explore-the-workspaces)
-6. [Project structure](#project-structure)
-7. [Configuration](#configuration)
-8. [Testing](#testing)
-9. [Evaluation results](#evaluation-results)
-10. [Technology Stack](#technology-stack)
-11. [Tasks checklist](#tasks-checklist)
-12. [Current limitations](#current-limitations)
-13. [AI/ML Assistant App Preview](#ai/ml-assistant-app-preview)
+5. [Accounts and personalisation](#accounts-and-personalisation)
+6. [Explore the workspaces](#explore-the-workspaces)
+7. [Project structure](#project-structure)
+8. [Configuration](#configuration)
+9. [Testing](#testing)
+10. [Evaluation results](#evaluation-results)
+11. [Technology stack](#technology-stack)
+12. [Tasks checklist](#tasks-checklist)
+13. [Current limitations](#current-limitations)
+14. [App preview](#app-preview)
 
 ---
 
-## Get started in 4 simple steps
+## Get started
 
 **Prerequisites:** Python 3.11+, the [`uv`](https://docs.astral.sh/uv/) package manager, and an
 [OpenRouter API key](https://openrouter.ai/keys).
 
 ```bash
-# 1 — create the single uv-managed virtual environment
-make sync
-
-# 2 — add your key to a .env file in the project root (never commit it; it is git-ignored)
-#     OPENROUTER_API_KEY=...
-#     GOOGLE_API_KEY=...          # optional — enables the Gemini model
-#     EMBEDDING_BACKEND=api       # "API" (default) or "local" (free, fully offline)
-
-# 3 — build the vector store from the documents in data/
-make ingest
-
-# 4 — launch the app
-make run
+make sync     # 1. build the uv-managed virtual environment
+              # 2. put OPENROUTER_API_KEY=... in a .env file at the project root
+make ingest   # 3. build the vector store from data/  (spends embedding tokens)
+make run      # 4. launch the app
 ```
 
-> **Step 3 is required before your first question** — the app can't search an empty index.
-> Re-run `make ingest` whenever you change documents in `data/` **or** switch the embedding
-> backend/model (a different embedder produces number-lists of a different size, so the old index
-> no longer lines up and must be rebuilt).
+Optional `.env` keys: `GOOGLE_API_KEY` for the native Gemini model, and
+`EMBEDDING_BACKEND=local` for free offline embeddings instead of the API default.
+
+> **Step 3 is required before your first question**, because the app cannot search an empty
+> index. Re-run `make ingest` after changing anything in `data/`, and after switching the
+> embedding backend or model, since a different embedder produces number-lists of a different
+> size. Stop the app first, or restart it afterwards.
 
 | Command | Description |
 |---|---|
-| `make help` | List every target with a one-line description (also what bare `make` prints) |
-| `make sync` | Create/update `.venv` from `pyproject.toml` |
-| `make run` | Launch the Streamlit app (`src/app.py`) |
-| `make ingest` | Build the Chroma vector store from `data/` (confirms first: it spends embedding tokens) |
+| `make help` | List every target (also what bare `make` prints) |
+| `make run` | Launch the Streamlit app |
+| `make ingest` | Rebuild the Chroma vector store from `data/`. Confirms first, since it costs tokens |
 | `make doctor` | Read-only readiness report: index drift, credentials, accounts. Spends nothing |
-| `make test` | Run the pytest suite (**fully offline tests**). One test: `make test T=tests/test_x.py::test_y` |
-| `make mcp-serve` | Optional — publish Synapse's own tools as an MCP server (`src/mcp_server.py`) |
-| `make lint` / `make format` | Ruff check / format on `src tests conftest.py` |
-| `make fix` | Auto-fix whatever `make check` would reject (Ruff `--fix`, then format) |
-| `make format-check` | Verify formatting without rewriting files (what CI runs) |
-| `make check` | The full gate: lint + format check + tests — run this before pushing |
-| `make clean` | Remove caches, leaving `.venv` alone (`make clean-venv` removes that too) |
+| `make check` | The CI gate: lint, format check, 455 offline tests |
+| `make fix` | Auto-fix whatever `make check` would reject |
+| `make test` | Just the tests. One test: `make test T=tests/test_x.py::test_y` |
+| `make mcp-serve` | Optional. Publish Synapse's own tools as an MCP server |
+| `make clean` | Remove caches, leaving `.venv` alone |
 
-`make check` is exactly what CI runs: [`.github/workflows/check.yml`](.github/workflows/check.yml)
-repeats lint → format → pytest on every push to `main` and every pull request. The badge at the
-top of this README reflects the latest run on `main` — click it (or open
-[Actions → check](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml)) to see which runs
-passed or failed, and the full logs for each step. The gate needs **no secrets** — the test
-suite is fully offline (fake LLM, KB, tools), so no API key is ever exposed to Actions.
+`make check` is exactly what CI runs, on every push to `main` and every pull request
+([`check.yml`](.github/workflows/check.yml)). It needs no secrets, because the suite is fully
+offline with a fake LLM, KB and tools.
 
 ---
 
-## What makes Synapse different?
+## What makes Synapse different
 
-Ask it something like *"How do transformers use attention?"* or *"Explain LoRA to a
-beginner."* — and three rules govern every reply:
+Ask it *"How do transformers use attention?"* or *"Explain LoRA to a beginner."* Three rules
+govern every reply:
 
-- **In the knowledge base** → answered **from the retrieved passages**, with inline citations
-  (`[1]`, `[2]`, …) you can expand to read the source.
-- **On-topic but *not* in the knowledge base** → answered from general knowledge, but only
-  behind an explicit *"(Not covered by the knowledge base…)"* disclaimer, so you always know
-  when it left its sources.
-- **Off-topic, or a prompt-injection attempt** → **politely refused**.
+- **In the knowledge base.** Answered from the retrieved passages, with inline citations
+  (`[1]`, `[2]`) you can expand to read the source.
+- **On-topic but not in the knowledge base.** Answered from general knowledge, behind an explicit
+  *"(Not covered by the knowledge base…)"* disclaimer.
+- **Off-topic, or a prompt-injection attempt.** Politely refused.
 
-You also steer *how* it teaches, from ⚙️ Settings:
+You steer *how* it teaches from ⚙️ Settings:
 
 | Dial | Options |
 |---|---|
@@ -135,15 +119,12 @@ You also steer *how* it teaches, from ⚙️ Settings:
 | **Prompt technique** | Standard · Chain-of-Thought · Few-shot · Socratic · Analogy-first |
 | **Response length** | Concise · Balanced · Detailed |
 
-Choosing a subject simply filters which documents are in play; the shared-foundation topics in
-`data/overlap/` (embeddings, optimisation, evaluation) show up whichever single subject you pick,
-because they underpin all of them.
+Picking a subject filters which documents are in play. The shared-foundation notes in
+`data/overlap/` show up whichever single subject you choose, because they underpin all of them.
 
 ---
 
 ## How Synapse finds an answer
-
-Every question follows the same simple process: first it's checked for safety, then the app decides what kind of question it is, and finally it generates the best answer. Here's the complete journey:
 
 ```
 User question
@@ -167,397 +148,263 @@ User question
 Cited answer + sources + tool cards + full trace  →  rendered in Streamlit
 ```
 
-A couple of things to know:
+Safety is screened before anything else, and a small cheap model does the routing so the larger
+chat model is only used when it is needed. Retrieval rewrites follow-up questions into standalone
+queries, and when the passages it finds are too weak it falls back to
+[corrective RAG](https://arxiv.org/abs/2401.15884), fetching from arXiv or the web and citing
+those too.
 
-
-- **Safety always comes first.** Every question is checked before anything else, so unsafe or malicious prompts are filtered out before they reach the rest of the app.
-- **Smart routing keeps costs low.** A small, fast AI model decides how to handle your question. The larger chat model is only used when it's actually needed.
-
-
-<details>
-<summary><b>Want the technical details?(click to expand)</b></summary>
-
-The app's processing pipeline is written in Python (`src/core/`) and is completely separate from the user interface, making it easy to test on its own.
-
-It supports two ways of running the same pipeline:
-
-- **Linear** (default) – a simple step-by-step workflow.
-- **Graph** – the same workflow built with LangGraph, making it easier to visualise and debug.
-
-Both versions use the same processing steps and are tested to ensure they produce identical results (`tests/test_engine_parity.py`). You can switch between them in **⚙️ Settings**.
-
-The routing model is also independent of the chat model, so you can choose one model to classify questions and another to generate answers.
-
-</details>
-
-
-
+The pipeline lives in `src/core/` and never imports Streamlit, which is what makes it testable on
+its own. Two engines run the same steps: **linear** (default) and **graph**
+([LangGraph](https://langchain-ai.github.io/langgraph/), easier to visualise). A parity test keeps
+their results identical. The routing model is independent of the chat model, so one model can
+classify and another can write.
 
 ---
 
 ## Features at a glance
 
-[125.md](125.md) lists the main requirements and optional Easy, Medium, and Hard tasks. This is a brief overview of what Synapse app implements and where its features are found.
+[125.md](125.md) lists the core requirements plus optional Easy, Medium and Hard tasks.
 
-
-### Core requirements — implemented
-
-| Requirement  |How the app supports it | Code |
+| Requirement | How the app supports it | Code |
 |---|---|---|
-| **1 · RAG with a KB, embeddings, chunking, similarity search** | Front-matter-tagged docs → `RecursiveCharacterTextSplitter` (1200/200) → Chroma (cosine). Retrieval is **hybrid**: dense vectors blended with a hand-written BM25 keyword scorer. | `src/rag/` |
-| **2 · At least 3 domain tool calls** | **arXiv search**, a **SymPy symbolic/numeric calculator** (killable, timeout-guarded subprocess), and a **token & cost estimator** — run in a bounded tool loop. | `src/tools/`, `src/generation.py` |
-| **3 · Domain specialisation + prompts + security** | Curated AI/ML KB; a grounded system prompt with learner-level/technique/length styling; a layered security stack. | `src/generation.py`, `src/config.py`, `src/security.py` |
-| **4 · LangChain + OpenRouter, error handling, input validation** | `ChatOpenAI` via OpenRouter (optional native Gemini); length/empty validation; graceful degradation is enforced, not incidental. | `src/llm.py`, `src/security.py` |
-| **5 · Intuitive UI: context, sources, tool results, progress** | Multi-page Streamlit studio: cited-source expanders and tool-call cards. **No blocking call hangs silently** — every network/LLM surface shows progress: a spinner for single calls, live per-node status for the LangGraph engine, and a `done/total` progress bar for batch eval/A-B runs; per-stage timings surface in the 🧪 Experiments trace. | `src/ui/`, `utils.py` |
+| **1 · RAG: KB, embeddings, chunking, similarity search** | Front-matter-tagged docs, split by `RecursiveCharacterTextSplitter` (1200/200), stored in Chroma with cosine distance. Retrieval is hybrid: dense vectors blended with a hand-written BM25 scorer. | `src/rag/` |
+| **2 · At least 3 domain tool calls** | arXiv search, a SymPy calculator (killable, timeout-guarded subprocess), and a token and cost estimator, in a bounded tool loop. | `src/tools/`, `src/generation.py` |
+| **3 · Domain specialisation, prompts, security** | Curated AI/ML KB, a grounded system prompt with level, technique and length styling, and a layered security stack. | `src/generation.py`, `src/security.py` |
+| **4 · LangChain + OpenRouter, errors, validation** | `ChatOpenAI` via OpenRouter, optional native Gemini, input validation, and graceful degradation that is enforced rather than incidental. | `src/llm.py`, `src/security.py` |
+| **5 · Intuitive UI: context, sources, tools, progress** | Multi-page Streamlit studio with cited-source expanders and tool-call cards. No blocking call hangs silently: a spinner for single calls, live per-node status for the graph engine, a progress bar for batch runs. | `src/ui/`, `src/utils.py` |
 
+<details>
+<summary><b>Sub-requirement checklist</b>, each item pointing at the function that implements it</summary>
 
+Symbol names rather than line numbers, because line numbers go stale on the next edit.
 
-#### Every sub-requirement checklist item:
+**RAG** · KB in `data/{ml,dl,ai,overlap}/` · embeddings in `src/rag/embeddings.py`
+(`OpenAIEmbeddings` plus offline `LocalEmbeddings`) · chunking in `build_vector_store`
+(`src/rag/ingest.py`) · similarity search in `src/rag/retriever.py` (Chroma cosine blended with
+BM25)
 
-A checklist version of the table above. Each item from the [125.md](125.md) core list is linked to its exact location, making it easy to verify at a glance.
+**Tool calling** · `search_arxiv` (`src/tools/arxiv.py`) · `estimate_tokens_and_cost`
+(`src/tools/tokens.py`) · `math_calculator` (`src/tools/calculator.py`) · bounded tool loop in
+`src/generation.py`
 
+**Domain specialisation** · subjects and techniques in `src/config.py` · prompt styling in
+`src/generation.py` · injection patterns and domain vocabulary in `src/security.py`, screened by
+`screen_injection` (`src/core/router.py`) and run first by `src/core/steps.py`, ahead of routing
 
-**RAG implementation**
-- [x] Domain knowledge base — `data/{ml,dl,ai,overlap}/` (front-matter-tagged AI/ML notes)
-- [x] Document retrieval with embeddings — `src/rag/embeddings.py` (API `OpenAIEmbeddings` + offline `LocalEmbeddings`)
-- [x] Chunking strategy — `src/rag/ingest.py:99` (`RecursiveCharacterTextSplitter`, 1200/200)
-- [x] Similarity search — `src/rag/retriever.py` (Chroma cosine **+** BM25 hybrid blend)
+**Technical** · `ChatOpenAI` with `base_url=OPENROUTER_BASE_URL` (`src/llm.py`) · error handling
+in `src/core/service.py` and `src/generation.py` · `validate_input` (`src/security.py`), called
+from `src/core/service.py`
 
-**Tool calling**
-- [x] arXiv paper search — `src/tools/arxiv.py:122` (`@tool search_arxiv`)
-- [x] Token & cost estimator — `src/tools/tokens.py:11` (`@tool estimate_tokens_and_cost`)
-- [x] SymPy calculator — `src/tools/calculator.py:115` (`@tool math_calculator`)
-- [x] Tools run in a bounded LLM tool loop — `src/generation.py`
+**UI** · `src/app.py` and `src/ui/pages/` · cited sources in `chat.py` · tool cards and the
+playground in `tools.py` · `st.spinner`, `st.status` and `st.progress` across all 10 pages that
+make a slow call, with per-stage timings in 🧪 Experiments
 
-**Domain specialisation**
-- [x] Focused domain + KB — AI/ML; subjects/techniques in `src/config.py`
-- [x] Domain-specific prompts & responses — `src/generation.py` (level/technique/length styling)
-- [x] Domain security measures — `src/security.py` (injection patterns + domain vocabulary), screened
-  in `src/core/router.py:257` (`screen_injection`) and run **first** by `src/core/steps.py:217`, before routing
-
-**Technical implementation**
-- [x] LangChain + OpenRouter (OpenAI-compatible SDK) — `src/llm.py:46` (`ChatOpenAI`, `base_url=OPENROUTER_BASE_URL`)
-- [x] Proper error handling / graceful degradation — `src/core/service.py:112,152`, `src/generation.py:155`
-- [x] User input validation — `src/security.py:283` (`validate_input`), called at `src/core/service.py:99`
-
-**User interface (Streamlit)**
-- [x] Intuitive multi-page UI — `src/app.py` + `src/ui/pages/`
-- [x] Shows context & sources — `src/ui/pages/chat.py` (📎 cited-source expanders, `bundle.sources`)
-- [x] Displays tool-call results — `src/ui/pages/tools.py` (tool playground) + 🛠️ tool-call cards in chat
-- [x] Progress indicators for long ops — `st.spinner` / `st.status` / `st.progress` across 10 pages; per-stage timings in 🧪 Experiments (`utils.py`)
-
-
-
-### Retrieval that goes beyond the basics
-
-Instead of searching once and hoping for the best, the app takes a few extra steps to improve its answers.
-
-- **It rewrites follow-up questions.** If you ask something like *"How is it trained?"*, app uses the conversation to turn it into a complete search query before looking for information(`rag/retriever.py`).
-- **It checks whether it found enough information.** If the retrieved sources aren't strong enough to answer your question, app searches for more information from trusted external sources, including **arXiv** and **live web search**, and cites them in its answer (the *corrective RAG*; `core/steps.py`, `core/sources.py`.)
-- **It works the same in both modes.** Whether you use the default pipeline or the LangGraph version, the same retrieval process is used, and tests ensure they produce the same results.
-
+</details>
 
 ---
 
-### User authentication & personalisation
+## Accounts and personalisation
 
-The spec's medium task 4 has two halves — the app implements both, but they work in different
-ways, so it's worth being precise about each.
+**Personalisation is always on and needs no account.** The ⚙️ Settings dials live in session
+state, so each visitor gets an independent setup for the length of their visit, and the choices
+travel with the conversation export. Nothing is stored per user on disk.
 
-**Personalisation — always on, no account needed.** Every answer is shaped by the dials in
-⚙️ Settings (subject, learner level, prompt technique, response length, chat model, and which
-engine runs). These are held in Streamlit **session state**, so each visitor gets their own
-independent, in-memory setup for the length of their visit; the choices ride along in the
-conversation export too. There is no per-user profile stored on disk — the personalisation is
-*per session*, which is exactly the right grain for a stateless, single-visit study tool.
+**Sign-in is real but delegated.** `st.login()` and `st.user` (Streamlit 1.42+, plus `authlib`)
+put **Log in** and **Sign up for free** in the top bar and send the visitor to Google, Auth0,
+Microsoft or Okta. Both buttons start the same flow, because with an identity provider there is
+no separate sign-up. Synapse stores no passwords and never sees a credential. Configure it under
+`[auth]`; `.streamlit/secrets.toml.example` has the walkthrough. With nothing configured the app
+runs open, which is what `make run` on a laptop should do.
 
-**Authentication — real accounts on a deployed app.** Synapse supports two independent doors,
-and which one you get depends only on what is in secrets. With neither configured the app runs
-fully open, which is what `make run` on a laptop should do.
+A `streamlit-authenticator` password gate is the fallback for a host with no provider. It reads
+**`[password_auth]`**, not `[auth]`, because Streamlit reads an unrecognised `[auth]` sub-table as
+the name of a provider. There is no self-service sign-up on that path, since `st.secrets` is
+read-only on Community Cloud.
 
-**Native OpenID Connect is the deployment path.** `st.login()` / `st.user` (Streamlit ≥ 1.42,
-`authlib`) puts **Log in** and **Sign up for free** in the top bar and sends a visitor to Google,
-Auth0, Microsoft or Okta. Both buttons start the same flow, and that is not a placeholder standing
-in for a registration form: with an identity provider there *is* no separate sign-up — a visitor
-without an account creates one at the provider and arrives back here signed in. Synapse stores no
-passwords, keeps no user table, and never sees a credential.
+**Use a key.** A top-bar popover takes an OpenRouter key so a visitor's questions are billed to
+them. It is validated against OpenRouter before being accepted, because a key with one character
+missing would otherwise fail quietly: Synapse retrieves and cites before it generates, so the run
+looks healthy right up until the answer. The key stays in that session's server-side store, never
+on disk or in a log, and **Forget my key** drops it. Internally it is a thread-local override in
+`src/config.py`, not a module global, since each Streamlit session runs in its own thread and a
+global would let one visitor's key pay for another's question.
 
-- **Configured entirely in `[auth]`** — `redirect_uri`, `cookie_secret` and the provider's
-  `client_id` / `client_secret`. On Streamlit Community Cloud that goes in the app's Secrets box;
-  `.streamlit/secrets.toml.example` has the Google walkthrough and the multi-provider layout.
-- **Sessions survive a refresh**, and signing out is `st.logout()` from the account menu.
+**The top bar** sits on the header strip beside Deploy, holding 🆕 New chat, the login buttons and
+Use a key. Once someone is identified those collapse to their name with an account menu behind it.
+Below 900px the row falls back into the page. The offset clears Streamlit's Stop button, which is
+the one neighbour it must never cover.
 
-**The built-in password gate is the fallback**, for a host with no identity provider.
-`src/auth.py` still offers the `streamlit-authenticator` username/password guard in front of the
-whole app, with cookie-persisted sessions. It now reads **`[password_auth]`** rather than
-`[auth]`, because Streamlit parses any unrecognised `[auth]` sub-table as the *name of a
-provider* — an old `[auth.credentials]` block would be read as a provider called "credentials".
-A legacy `[auth]` section that carries `credentials` is still honoured, so existing installs keep
-working. There is deliberately no self-service sign-up on this path: `st.secrets` is read-only on
-Community Cloud, so a registration form would accept an account and then silently lose it.
-
-**Use a key — bring your own credential.** A popover in the same top-bar row takes an OpenRouter
-key so a visitor's questions are billed to them rather than to whoever deployed the app. The key
-is **validated against OpenRouter before it is accepted** (a key with one character missing would
-otherwise fail *quietly*: Synapse retrieves and cites before it generates, so the run looks fine
-right up until the answer). It lives in that browser session's server-side store only — never
-written to disk, never logged, never in a URL — and **Forget my key** drops it before the tab
-closes. Internally it is a *thread-local* override in `src/config.py`, not a module global: each
-Streamlit session runs in its own thread, and a global would let one visitor's key pay for
-another visitor's question.
-
-**Personalisation and saved conversations.** ⚙️ Settings is still per-session. What is now kept
-across a visit is the **conversation**, in the 🕘 Past chats panel in the sidebar (described
-under [Explore the workspaces](#explore-the-workspaces)). Threads are one JSON file each under
-`outputs/chat_history/`, in a **directory per visitor** keyed by a hash of their identity: on a
-deployment everyone shares one filesystem, and that hash is the only thing keeping their
-questions apart. On Community Cloud that filesystem is **ephemeral**, so threads survive
-refreshes and reconnections but are wiped on reboot or redeploy. Point `SYNAPSE_CHAT_DIR` at a
-mounted volume if they need to outlive one.
-
-### The app's top-right controls
-
-Two groups share the header strip, and they belong to different applications.
-
-**Synapse's own row**, lifted onto the header beside the Deploy button by a single CSS rule
-(`theme.TOP_BAR_CSS`, `@media (min-width: 900px)`):
-
-| Control | What it does |
-|---|---|
-| 🆕 **New chat** | Starts a fresh conversation. Nothing is deleted — the current thread is written out first, so what just left the screen is the top row of 🕘 Past chats. |
-| **Log in** | `st.login()` to the configured provider. Disabled, with the reason in its tooltip, when none is configured. |
-| **Sign up for free** | The same flow. A visitor without an account creates one at the provider and returns signed in. |
-| **Use a key** | A popover taking an OpenRouter key for this browser session, checked before it is accepted. |
-
-Once someone is identified the four collapse to their **name**, with the account menu (email,
-log out, own-key controls) behind it — one line until they ask it to take more. Below 900px the
-header has no room to share, so the rule is dropped and the row falls back into the page, where
-it still fits. The right offset clears Streamlit's **Stop** button as well as Deploy; Stop is the
-one neighbour it must never cover, since a reader watching a long retrieval has to be able to
-stop it.
-
-**Streamlit's own ⋮ menu** stays to their right, and that is where the
-**System / Light / Dark** appearance switch lives, alongside *Rerun*, *Print* and *About*.
-Synapse adds no theme toggle of its own, but it does have to earn that switch. Streamlit
-discards its three built-in themes the moment an app declares one, and it draws the switch only
-while more than one theme is left, so a single `[theme]` block silently removes the control and
-locks every reader into whatever the app declared. `.streamlit/config.toml` therefore declares
-the palette twice, as `[theme.light]` and `[theme.dark]`. That gives Streamlit two themes to
-name, restores the switch, and makes **System** (follow the reader's OS) the default for anyone
-who has never chosen. The CSS in `src/ui/theme.py` keeps its accents as alpha over whatever sits
-behind them, so both variants get an app built for their background rather than one tuned for a
-single surface and tolerated on the other. `tests/test_theme_config.py` pins the split, since
-nothing in the app reads those values and nothing would otherwise notice them being merged back.
-
+**Themes.** Streamlit's ⋮ menu holds the System / Light / Dark switch. Synapse adds no toggle of
+its own, but it has to earn that one: Streamlit discards its built-in themes as soon as an app
+declares one, and draws the switch only while more than one theme is left. A single `[theme]`
+block therefore removes the control entirely. `.streamlit/config.toml` declares the palette twice
+instead, as `[theme.light]` and `[theme.dark]`, which restores the switch and makes System the
+default. `tests/test_theme_config.py` pins that split.
 
 ---
 
 ## Explore the workspaces
 
-A multi-page Streamlit studio. Everything a reader navigates with lives in the sidebar, which
-is built top to bottom from four pieces:
-
-| Sidebar, top to bottom | What it is |
-|---|---|
-| **Synapse glyph** | The brand mark, pinned above the navigation by `st.logo`. Glyph only, because the navigation heading right under it already carries the name |
-| **Grouped navigation** | The thirteen workspaces, under five headings (the table below) |
-| **🕘 Past chats** | This visitor's saved conversations, newest first, with a per-thread delete and a **Delete all** |
-| **Grounded · Cited · Honest** | A one-line signature at the foot, with a pulsing synapse beside it |
-
-The navigation is **grouped**, in the shape most chat apps have settled on: what you came to do
-at the top, the machinery underneath, the knobs at the bottom. Group order comes from
-`registry.SECTION_ORDER` and page order from each page's `order` field.
+The sidebar is built from four pieces: the Synapse glyph, grouped navigation over thirteen
+workspaces, the 🕘 Past chats panel, and a one-line signature at the foot.
 
 | Sidebar group | Workspace | Intended use |
 |---|---|---|
-| **🧭 AI/ML Research Assistant** | 🏠 Home | Landing dashboard: KB/session status and jump-in cards |
-| | 💬 AI Chat | The main assistant: cited answers, tool cards, model + per-answer settings, export |
+| **🧭 AI/ML Research Assistant** | 🏠 Home | Landing dashboard: KB and session status, plus jump-in cards |
+| | 💬 AI Chat | The main assistant: cited answers, tool cards, model settings, export |
 | **Learn** | 🎓 AI/ML Tutor | Guided, level-aware learning paths |
 | | 🔬 AI/ML Lab | Hands-on recipes, LLM exercises, and a live code cell |
 | | 🎯 Trivia | KB-grounded quizzes with instant feedback |
-| **Analyse** | 📈 Analytics | **Session-wide** token usage and cost across every answer (per-question breakdown lives in 🧪 Experiments) |
-| | 📊 Evaluation | Score **one** RAG configuration in absolute terms over the golden set |
-| | 🆚 A/B testing | Compare **two** RAG strategies head-to-head under one shared judge |
-| | 🧪 Experiments | Inspect **one** question end-to-end: full trace plus a playground to fire each tool call standalone (incl. the arXiv tool call) |
-| **Knowledge** | 📰 AI News | Stay **current**: live arXiv papers, plus lab newsrooms, digests, and voices to follow |
-| | 📚 Stacks | Evergreen **courses, tools & references** per subject (→ 🎓 Tutor for lessons, 📰 AI News for live papers) |
-| | 📄 Knowledge Base | Inspect/upload/re-index docs; promote external passages |
+| **Analyse** | 📈 Analytics | Session-wide token usage and cost. Per-question detail is in 🧪 Experiments |
+| | 📊 Evaluation | Score **one** RAG configuration over the golden set |
+| | 🆚 A/B testing | Compare **two** RAG strategies under one shared judge |
+| | 🧪 Experiments | Inspect **one** question end to end, plus a playground for each tool call |
+| **Knowledge** | 📰 AI News | Live arXiv papers, lab newsrooms, digests, voices to follow |
+| | 📚 Stacks | Evergreen courses, tools and references per subject |
+| | 📄 Knowledge Base | Inspect, upload and re-index docs; promote external passages |
 | **System** | ⚙️ Settings | Model, generation, RAG tuning, engine, MCP, status |
 
-The sidebar and the 🏠 Home cards are the *same* grouping drawn twice: both call
+Group order comes from `registry.SECTION_ORDER` and page order from each page's `order` field.
+The sidebar and the 🏠 Home cards are the same grouping drawn twice, both from
 `registry.get_sections()`, so they cannot fall out of step. Adding a workspace is one file in
-`src/ui/pages/` with a `@register_page` decorator, and it appears in both.
+`src/ui/pages/` with a `@register_page` decorator.
 
-### 🕘 Past chats
-
-The panel under the navigation, on every page, because a reader who asks something and then
-walks over to 📊 Evaluation has still had that conversation and should still find it. The
-current thread is written out on every run, so **🆕 New chat** in the top bar never destroys
-anything: what just left the screen becomes the top row here.
-
-- **Newest first, capped at 12 rows.** The list is capped, the store is not. Every row is two
-  widgets rebuilt on every rerun of every page, so an unbounded list makes the whole sidebar
-  feel like it is ignoring clicks once a few dozen conversations pile up. The panel says how
-  many it is not showing, and **Delete all** reaches those too.
-- **Every delete takes two presses.** Moving a dial is reversible by moving it back; these two
-  controls rewrite the filesystem, and their reward for a misclick is losing the thing the
-  reader opened the panel to find. The pending state is keyed per thread rather than held as
-  one shared flag, which would arm the row immediately below the one just pressed.
-- **One JSON file per thread**, in a directory per visitor keyed by a hash of their identity.
-  On a deployment everyone shares one filesystem, and that hash is the only thing keeping their
-  questions apart. Where the host's filesystem is not writable the panel says so plainly rather
-  than quietly keeping nothing.
+**🕘 Past chats** sits under the navigation on every page. The current thread is written out on
+every run, so 🆕 New chat never destroys anything: what just left the screen becomes the top row.
+The panel draws the 12 newest and says how many it is not showing, because every row is two
+widgets rebuilt on every rerun. Both deletes take two presses, and the pending state is keyed per
+thread so a rerun cannot arm the row below the one just pressed. Threads are one JSON file each,
+in a directory per visitor keyed by a hash of their identity, which on a shared deployment is the
+only thing keeping their questions apart.
 
 ---
 
 ## Project structure
 
-The codebase is a **pure-Python core with a Streamlit UI on top**: everything under `src/core`,
-`src/rag`, `src/tools`, `src/eval`, `src/lab`, and `src/quiz` runs without Streamlit and is unit-
-tested offline; `src/ui` is the only place the UI framework is imported. Each file below carries a
-one-line note on what it does.
+A pure-Python core with a Streamlit UI on top. Everything under `src/core`, `src/rag`,
+`src/tools`, `src/eval`, `src/lab` and `src/quiz` runs without Streamlit and is unit-tested
+offline. `src/ui` is the only place the UI framework is imported.
+
+| Package | What lives there |
+|---|---|
+| `src/core/` | The answer pipeline: routing, injection screening, the shared steps, both engines, the agent loop, external sources, the MCP client, saved chats, and `AssistantService` |
+| `src/rag/` | Embeddings, ingestion, hybrid retrieval, and KB promotion |
+| `src/tools/` | arXiv search, the SymPy calculator, token and cost estimation |
+| `src/eval/` | Self-hosted RAGAs-style harness: judge, four metrics, dataset, runner, compare |
+| `src/lab/` | 🔬 Lab and 🎓 Tutor: curriculum, six toy datasets, recipes, challenges, sandbox |
+| `src/quiz/` | 🎯 Trivia: build items from KB passages, grade deterministically |
+| `src/ui/` | Page registry, session state, theme, top bar, past chats, and one module per workspace |
+| Top level | `config.py`, `llm.py`, `generation.py`, `security.py`, `auth.py`, `export.py`, `ratelimit.py`, `runlog.py`, `utils.py`, `doctor.py`, `mcp_server.py` |
+
+<details>
+<summary><b>Full file tree</b> with a one-line note per module (click to expand)</summary>
 
 ```
-src/                      # all application code
-│
-│  ── top-level modules (shared by every workspace) ──
-├── app.py                # Streamlit entry point: wires the top bar, grouped sidebar, and page
-├── config.py             # one home for paths, the model + price list, and tunable defaults
-├── generation.py         # learner-level prompts, answer styling, and the RAG + tool-calling loop
+src/
+├── app.py                # entry point: wires the top bar, grouped sidebar, and active page
+├── config.py             # paths, the model + price registry, thread-local runtime keys
+├── generation.py         # prompts, answer styling, and the RAG + tool-calling loop
 ├── llm.py                # chat-model factory: OpenRouter by default, native Gemini optional
-├── security.py           # input validation, injection screening, and the AI/ML domain gate
-├── auth.py               # who is visiting: OIDC sign-in, own-key, password-gate fallback
-├── export.py             # turn a conversation into a JSON, CSV, or PDF transcript
+├── security.py           # input validation, injection screening, the AI/ML domain gate
+├── auth.py               # identity: OIDC sign-in, own-key, password-gate fallback
+├── export.py             # a conversation as a JSON, CSV, or PDF transcript
 ├── ratelimit.py          # per-session token-bucket rate limiter
-├── runlog.py             # append-only JSONL run log for lightweight monitoring
-├── utils.py              # token/cost estimation, stage timing, retry-on-transient-failure
-├── doctor.py             # `make doctor`: read-only readiness report (index drift, keys)
-├── mcp_server.py         # optional: expose app's own tools to any MCP client (make mcp-serve)
+├── runlog.py             # append-only JSONL run log
+├── utils.py              # token/cost estimation, stage timing, retry on transient failure
+├── doctor.py             # `make doctor`: read-only readiness report
+├── mcp_server.py         # optional: expose the app's own tools to any MCP client
 │
-├── core/                 # the answer pipeline — pure python, never imports Streamlit
-│   ├── schemas.py        #   typed router / injection results (structured-output contracts)
-│   ├── router.py         #   the decision layer: pick a route and screen for injection
-│   ├── steps.py          #   the shared steps — single source of truth for both engines
-│   ├── linear.py         #   engine A — lightweight if/elif router (the default)
-│   ├── graph.py          #   engine B — the same steps as an explicit LangGraph StateGraph
-│   ├── agent.py          #   opt-in bounded plan → act → observe loop
-│   ├── sources.py        #   pluggable external sources for CRAG augmentation (arXiv, web)
-│   ├── mcp_client.py     #   remote MCP client: borrow a remote server's tools for the loop
-│   ├── chats.py          #   saved conversations: one JSON per thread, a directory per visitor
-│   └── service.py        #   AssistantService — runs one request, owns its cost + trace
+├── core/                 # the answer pipeline. never imports Streamlit
+│   ├── schemas.py        #   typed router / injection results
+│   ├── router.py         #   pick a route, screen for injection
+│   ├── steps.py          #   the shared steps, one source of truth for both engines
+│   ├── linear.py         #   engine A, a lightweight if/elif router (the default)
+│   ├── graph.py          #   engine B, the same steps as a LangGraph StateGraph
+│   ├── agent.py          #   opt-in bounded plan -> act -> observe loop
+│   ├── sources.py        #   pluggable external sources for CRAG (arXiv, web)
+│   ├── mcp_client.py     #   borrow a remote MCP server's tools for the loop
+│   ├── chats.py          #   saved conversations: one JSON per thread, one dir per visitor
+│   └── service.py        #   AssistantService: runs one request, owns its cost and trace
 │
-├── rag/                  # retrieval: from raw documents to ranked, citable passages
-│   ├── embeddings.py     #   pluggable embedding backends (API default, local fallback)
-│   ├── ingest.py         #   build the Chroma vector store from data/
-│   ├── retriever.py      #   hybrid BM25 + vector search, and LLM query rewriting
-│   └── promote.py        #   fold approved external passages back into the curated KB
+├── rag/
+│   ├── embeddings.py     #   pluggable backends (API default, local fallback)
+│   ├── ingest.py         #   build the Chroma store from data/, via a staging swap
+│   ├── retriever.py      #   hybrid BM25 + vector search, and query rewriting
+│   └── promote.py        #   fold approved external passages into the curated KB
 │
-├── tools/                # the tools the model can call inside the answer loop
-│   ├── arxiv.py          #   arXiv paper search
-│   ├── calculator.py     #   symbolic / numeric maths via SymPy, guarded against abuse
-│   └── tokens.py         #   token-count and cost estimation
+├── tools/                #   arxiv.py · calculator.py · tokens.py
+├── eval/                 #   schemas · judge · metrics · dataset · runner · compare
+├── lab/                  #   curriculum · datasets · recipes · challenges · sandbox · seed
+├── quiz/                 #   quiz.py · schemas.py
 │
-├── eval/                 # self-hosted RAGAs-style evaluation harness
-│   ├── schemas.py        #   typed judge results (structured-output contracts)
-│   ├── judge.py          #   the LLM-as-judge, over structured outputs
-│   ├── metrics.py        #   the four RAGAs metrics, built on the judge
-│   ├── dataset.py        #   load the golden question + reference-answer set
-│   ├── runner.py         #   answer each sample, score it, aggregate the report
-│   └── compare.py        #   diff two runs — powers the 🆚 A/B testing page
-│
-├── lab/                  # 🔬 AI/ML Lab + 🎓 Tutor: hands-on learning, all offline
-│   ├── curriculum.py     #   the shared lesson plan (one source for both Lab and Tutor)
-│   ├── datasets.py       #   bundled toy datasets — no downloads
-│   ├── recipes.py        #   guided, parameterised ML / DL / NLP recipes
-│   ├── challenges.py     #   level-scaled, auto-checked practice challenges
-│   ├── understanding.py  #   LLM-graded "check your understanding" for concept lessons
-│   ├── seed.py           #   LLM-written starter code for the opt-in advanced cell
-│   ├── llm_exercises.py  #   live-model exercises for the AI & LLM topic
-│   ├── sandbox.py        #   restricted in-process runner for the code cell
-│   └── schemas.py        #   typed contract for the LLM code-seeding
-│
-├── quiz/                 # 🎯 Trivia: grounded multiple-choice questions + grading
-│   ├── quiz.py           #   build quiz items from KB passages, grade deterministically
-│   └── schemas.py        #   typed contracts for quiz generation
-│
-└── ui/                   # the Streamlit layer — the only place Streamlit is imported
-    ├── registry.py       #   @register_page + get_sections + go_to_page (cross-page jumps)
-    ├── state.py          #   session-state setup and cached access to the knowledge base
-    ├── theme.py          #   shared look: brand mark, injected CSS, hero banner, footer
-    ├── account.py        #   the top bar: New chat, Log in, Sign up, Use a key, account menu
-    ├── past_chats.py     #   🕘 Past chats sidebar panel, autosave, and two-press deletes
+└── ui/                   # the only place Streamlit is imported
+    ├── registry.py       #   @register_page, get_sections, cross-page jumps
+    ├── state.py          #   session state, and the KB cache keyed on the live collection
+    ├── theme.py          #   brand mark, injected CSS, hero banner, footer
+    ├── account.py        #   top bar: New chat, Log in, Sign up, Use a key, account menu
+    ├── past_chats.py     #   🕘 Past chats panel, autosave, two-press deletes
     ├── exporters.py      #   shared JSON / CSV / PDF download buttons
-    ├── models.py         #   shared model picker — ⚙️ Settings and the Chat popover, one key
-    └── pages/            #   one module per workspace (drop one in and it auto-registers)
-        ├── home.py           # 🏠 Home — landing dashboard: status + jump-in links
-        ├── chat.py           # 💬 AI Chat — the main assistant, with sources + tool cards
-        ├── ml_tutor.py       # 🎓 AI/ML Tutor — guided, level-aware learning paths
-        ├── ml_lab.py         # 🔬 AI/ML Lab — recipes, exercises, and a live code cell
-        ├── quiz.py           # 🎯 Trivia — KB-grounded quizzes with cited feedback
-        ├── resources.py      # 📚 Stacks — curated crash courses and the app's own docs
-        ├── ai_news.py        # 📰 AI News — live arXiv feed + a news-source directory
-        ├── analytics.py      # 📈 Analytics — token usage and cost for the session
-        ├── evaluation.py     # 📊 Evaluation — run the RAGAs harness over the golden set
-        ├── ab_testing.py     # 🆚 A/B testing — two RAG strategies head-to-head
-        ├── inspector.py      # 🧪 Experiments — full trace of the last question + tool playground
-        ├── knowledge_base.py # 📄 Knowledge Base — inspect / upload / re-index; promote passages
-        ├── tools.py          # tool playground — run each tool standalone
-        └── settings.py       # ⚙️ Settings — model, generation, RAG, engine, MCP, status
+    ├── models.py         #   the model picker, shared by Settings and the Chat popover
+    └── pages/            #   home · chat · ml_tutor · ml_lab · quiz · resources · ai_news
+                          #   analytics · evaluation · ab_testing · inspector
+                          #   knowledge_base · tools · settings
 
-data/                     # everything the app reads from disk
-├── ml/ dl/ ai/ overlap/  #   the knowledge base — 23 source docs; the folder sets a doc's subject
-├── eval/golden.jsonl     #   21-sample golden set for the evaluation harness
-└── promoted/             #   notes promoted from external sources (folded in on the next re-ingest)
+data/
+├── ml/ dl/ ai/ overlap/  # the knowledge base: 23 notes; the folder sets a doc's subject
+├── eval/golden.jsonl     # 21-sample golden set
+└── promoted/             # notes promoted from external sources
 
 .streamlit/config.toml    # light and dark variants of the brand violet, and no telemetry
 chroma_db/                # generated vector store (git-ignored; rebuilt by make ingest)
-tests/                    # 455 offline pytest tests — LLM, KB, tools, and sources all injectable
+tests/                    # 455 offline tests; LLM, KB, tools and sources all injectable
 ```
+
+</details>
 
 ---
 
 ## Configuration
 
-Everything is set via `.env` (loaded by `python-dotenv`) and the ⚙️ Settings page (API keys should never be hard-coded, printed, or committed.).
+Set through `.env`, loaded by `python-dotenv`, plus the ⚙️ Settings page. Keys are never
+hard-coded, printed or committed.
 
 | Variable | Default | Purpose |
 |---|---|---|
-| `OPENROUTER_API_KEY` | — | **Required.** LLM + embedding access via OpenRouter |
-| `GOOGLE_API_KEY` | — | Optional. Enables the native `gemini-native` model |
-| `EMBEDDING_BACKEND` | `api` | `api` (Text Embedding 3 Large) or `local` (free, offline sentence-transformers) |
+| `OPENROUTER_API_KEY` | none | **Required.** LLM and embedding access |
+| `GOOGLE_API_KEY` | none | Optional. Enables the native `gemini-native` model |
+| `EMBEDDING_BACKEND` | `api` | `api`, or `local` for free offline sentence-transformers |
 | `API_EMBEDDING_MODEL` | `openai/text-embedding-3-large` | The API embedding model |
-| `ROUTER_MODEL` | `openai/gpt-4o-mini` | Cheap model for routing + injection screening |
+| `ROUTER_MODEL` | `openai/gpt-4o-mini` | Cheap model for routing and injection screening |
+| `SYNAPSE_CHAT_DIR` | `outputs/chat_history` | Where saved conversations are written |
 
-Chat models and per-1M-token prices live in the model registry in `config.py`; retrieval and
-generation knobs live in the `RagSettings` dataclass and are surfaced in ⚙️ Settings.
-
----
-
-## Testing 
-
-- **`make test` → 455 passing tests, all offline.** The LLM, knowledge base, tools, and
-  external sources are injectable, so every route is exercised deterministically with no network
-  or API key. Coverage highlights: engine parity, security/injection, hybrid BM25, Corrective
-  RAG, the agent loop, evaluation metrics + concurrency, export, and MCP.
-- **`make lint` / `make format`** — Ruff, line length 100, target py311. Rules: `E F I UP B`
-  plus `SIM C4 RET PERF PTH RUF ICN ERA S TRY`; every exemption in `pyproject.toml` carries
-  the reason it is exempt. `make fix` applies whatever is auto-fixable.
-- **`make doctor`** reports index drift, credentials and account config without spending a
-  token or printing a secret — the fastest way to find out why an answer looked wrong.
-- **The root `conftest.py` is intentionally empty** (a docstring only). Under pytest's default
-  `prepend` import mode, the directory containing a `conftest.py` is placed on `sys.path`, so its
-  mere presence makes `from src…` resolve in every test — no editable install, no `PYTHONPATH`.
-- Conventions throughout: **type hints, docstrings, dataclasses/Pydantic models**, and
-  **structured LLM outputs validated as typed objects** — the code never parses model prose.
+Chat models and per-1M-token prices live in the registry in `src/config.py`. Retrieval and
+generation knobs live in `RagSettings` and are surfaced in ⚙️ Settings.
 
 ---
 
+## Testing
+
+- **`make test` runs 455 tests, all offline.** The LLM, knowledge base, tools and external
+  sources are injectable, so every route is exercised deterministically with no network and no
+  API key. Highlights: engine parity, security and injection, hybrid BM25, corrective RAG, the
+  agent loop, evaluation metrics and concurrency, export, and MCP.
+- **`make lint` and `make format`** run [Ruff](https://docs.astral.sh/ruff/) at line length 100,
+  targeting py311, with rules `E F I UP B SIM C4 RET PERF PTH RUF ICN ERA S TRY`. Every exemption
+  in `pyproject.toml` carries the reason it is exempt.
+- **`make doctor`** reports index drift, credentials and account config without spending a token
+  or printing a secret. The quickest way to find out why an answer looked wrong.
+- **The root `conftest.py` is intentionally empty.** Under pytest's default `prepend` import mode
+  its mere presence puts the project root on `sys.path`, so `from src…` resolves everywhere. No
+  editable install, no `PYTHONPATH`.
+
+---
 
 ## Evaluation results
 
-Because the evaluation harness is self-hosted (`src/eval/`), the scores below come from running
-it on this repo rather than from a published benchmark — they are reproducible by anyone with an
-API key: open 📊 **Evaluation**, keep the default configuration, and run the golden set.
+The harness is self-hosted (`src/eval/`), so these come from running it on this repo rather than
+from a published benchmark. Reproduce them by opening 📊 Evaluation, keeping the defaults, and
+running the golden set.
 
 <!-- TODO: run 📊 Evaluation on the default config and paste the four scores in, then delete
      this comment. Do not ship placeholder numbers. -->
@@ -565,151 +412,120 @@ API key: open 📊 **Evaluation**, keep the default configuration, and run the g
 | Metric | What it asks | Score |
 |---|---|---|
 | **Faithfulness** | Is every claim in the answer supported by the retrieved passages? | _TBD_ |
-| **Answer relevancy** | Does the answer actually address the question asked? | _TBD_ |
+| **Answer relevancy** | Does the answer address the question asked? | _TBD_ |
 | **Context precision** | Of the passages retrieved, how many were useful? | _TBD_ |
 | **Context recall** | Of what was needed to answer, how much did retrieval find? | _TBD_ |
 
-**Setup:** 21-sample golden set (`data/eval/golden.jsonl`), judge model `openai/gpt-4o-mini`,
-default `RagSettings`. Scores are LLM-judged, so expect a few points of run-to-run variance.
+Setup: the 21-sample golden set, judge model `openai/gpt-4o-mini`, default `RagSettings`. Scores
+are LLM-judged, so expect a few points of run-to-run variance.
 
-**A/B comparison.** The 🆚 page scores two configurations under the same judge and golden set,
-which is how the retrieval choices in this project were checked rather than assumed:
+<!-- TODO: run one A/B comparison (e.g. hybrid alpha=0.5 vs pure vector) and record which won. -->
 
-<!-- TODO: run one A/B comparison (e.g. hybrid alpha=0.5 vs pure vector, or rerank on vs off)
-     and record the two scores plus which won. One concrete row is worth more than the claim. -->
-
-| Comparison | Variant A | Variant B | Winner |
+| A/B comparison | Variant A | Variant B | Winner |
 |---|---|---|---|
 | _e.g._ hybrid `alpha=0.5` vs pure vector | _TBD_ | _TBD_ | _TBD_ |
 
 ---
 
-## Technology Stack
+## Technology stack
 
-| Component | Technology | Purpose |
-|---|---|---|
-| **Programming Language** | Python 3.11+ (managed with `uv`, linted and formatted with Ruff) | Core programming language, dependency management, and code quality. |
-| **User Interface** | Streamlit (multi-page, registry-driven) | Builds the interactive web application. |
-| **AI Orchestration** | LangChain and LangGraph | Manages LLM workflows, prompts, and multi-step AI processes. |
-| **Language Model Access** | OpenRouter (OpenAI-compatible SDK), with optional Google Gemini support | Provides access to multiple LLMs through a unified API. |
-| **AI-Assisted Development** | Claude Code and ChatGPT | Assisted with development, debugging, refactoring, and documentation. |
-| **Vector Database** | Chroma (local and persistent) | Stores embeddings for semantic search and RAG. |
-| **Embedding Models** | OpenRouter API (default) and `sentence-transformers` (local fallback) | Generates text embeddings for retrieval. |
-| **Document Processing** | `pypdf` | Extracts text from uploaded PDF CVs. |
-| **Data Validation** | `pydantic` | Validates structured data and model outputs. |
-| **External Tools** | arXiv, SymPy, and optional remote MCP | Supports research, symbolic mathematics, and external tool integration. |
-| **Data Export** | `fpdf2` (PDF), JSON, and CSV | Exports reports and structured data. |
-| **Testing Framework** | pytest (offline tests) | Supports automated testing and verification. |
-| **Standard Library Modules** | `json` | Serialises and deserialises structured data exchanged between application components and configuration files. |
-|  | `os` | Handles operating system interactions such as environment variables, file paths, and directory management. |
-|  | `re` | Performs regular expression operations for parsing, validating, and cleaning text. |
-|  | `io` | Provides in-memory file-like objects for reading and writing data streams without creating temporary files. |
-|  | `csv` | Reads and writes comma-separated value files for importing and exporting tabular data. |
-|  | `collections` | Supplies specialised container data structures such as `defaultdict`, `Counter`, and `deque` for efficient data manipulation. |
-|  | `shutil` | Performs high-level file and directory operations such as copying, moving, and deleting files. |
-|  | `pathlib.Path` | Provides an object-oriented and platform-independent approach to working with file system paths. |
-|  | `typing` | Defines type hints that improve code readability, maintainability, and static analysis. |
-|  | `dataclasses` (`@dataclass`, `field`) | Simplifies the creation of data-holding classes by automatically generating constructors and other utility methods, reducing boilerplate code. |
-|  | `__future__  annotations` | Postpones evaluation of type annotations, improving support for forward references, reducing import dependencies, and enhancing compatibility with modern Python typing features. |
+| Component | Technology |
+|---|---|
+| **Language** | [Python 3.11+](https://www.python.org/downloads/), managed with [uv](https://docs.astral.sh/uv/), linted with [Ruff](https://docs.astral.sh/ruff/) |
+| **Interface** | [Streamlit](https://docs.streamlit.io/), multi-page and registry-driven |
+| **Orchestration** | [LangChain](https://python.langchain.com/docs/introduction/) and [LangGraph](https://langchain-ai.github.io/langgraph/) |
+| **Model access** | [OpenRouter](https://openrouter.ai/docs/quickstart), with optional native [Gemini](https://ai.google.dev/gemini-api/docs) |
+| **Vector database** | [Chroma](https://docs.trychroma.com/), local and persistent |
+| **Embeddings** | OpenRouter API by default, [sentence-transformers](https://www.sbert.net/) offline |
+| **Documents** | [pypdf](https://pypdf.readthedocs.io/), for PDFs in `data/` and uploads in 📄 Knowledge Base |
+| **Validation** | [Pydantic](https://docs.pydantic.dev/), for structured data and model outputs |
+| **External tools** | [arXiv](https://arxiv.org/help/api), [SymPy](https://docs.sympy.org/), optional remote [MCP](https://modelcontextprotocol.io/) |
+| **Export** | [fpdf2](https://py-pdf.github.io/fpdf2/), plus JSON and CSV |
+| **Testing** | [pytest](https://docs.pytest.org/), fully offline |
+| **AI assistance** | Claude Code and ChatGPT, for development, debugging and documentation |
+
 ---
-
-
 
 ## Tasks checklist
 
-**Easy**
+Numbered as in [125.md](125.md). Every core requirement is done, along with all ten Medium
+tasks and four of the seven Hard ones, including both hard optionals I set out to do: the
+self-hosted RAGAs evaluation and the agent route.
 
-| # | Task | Status | Where |
-|---|---|---|---|
-| 1 | Conversation history + export | ✅ | `chat.py`, `export.py` |
-| 2 | Visualisation of the RAG process | ✅ | 🧪 Experiments trace (`inspector.py`, `service.py`) |
-| 3 | Source citations in responses | ✅ | inline `[n]` in `generation.py`, 📎 Sources expander |
-| 4 | Interactive help / guide | ◑ *partial* | `meta` route answers "what can you do?"; Home + tooltips (no scripted tour) |
+**Easy** · 1 conversation history and export ✅ (`chat.py`, `export.py`, 🕘 Past chats) ·
+2 RAG-process visualisation ✅ (🧪 Experiments trace) · 3 source citations ✅ (inline `[n]`,
+📎 Sources expander) · 4 interactive help ◑ partial (the `meta` route answers "what can you
+do?", plus Home and tooltips, but no scripted tour)
 
 **Medium**
 
 | # | Task | Status | Where |
 |---|---|---|---|
-| 1 | Multi-model support | ✅ | model registry in `config.py`, one shared picker (`ui/models.py`) in ⚙️ Settings and the Chat popover, `llm.py` |
-| 2 | Real-time KB updates | ✅ | upload + re-index and **live** promotion (`knowledge_base.py`, `rag/promote.py`) |
-| 3 | Prompt-injection protection | ✅ | regex patterns + LLM classifier + system-prompt hardening + domain gate (OWASP LLM01) |
-| 4 | User authentication + personalisation | ✅ | **opt-in login gate** (`auth.py`, cookie sessions) + rich per-session personalisation via ⚙️ Settings |
-| 5 | Token usage + cost display | ✅ | `utils.py`, `tools/tokens.py`, 📈 Analytics |
+| 1 | Multi-model support | ✅ | registry in `config.py`, one shared picker (`ui/models.py`), `llm.py` |
+| 2 | Real-time KB updates | ✅ | upload and re-index, plus live promotion (`knowledge_base.py`, `rag/promote.py`) |
+| 3 | Prompt-injection protection | ✅ | patterns, LLM classifier, hardened prompt, domain gate ([OWASP LLM01](https://genai.owasp.org/llmrisk/llm01-prompt-injection/)) |
+| 4 | Authentication and personalisation | ✅ | OIDC plus password-gate fallback (`auth.py`), per-session dials in ⚙️ Settings |
+| 5 | Token usage and cost display | ✅ | `utils.py`, `tools/tokens.py`, 📈 Analytics |
 | 6 | Tool-result visualisation | ✅ | 🛠️ tool-call cards, tool playground |
-| 7 | Export to PDF / CSV / JSON | ✅ | `export.py` (PDF via fpdf2; CSV formula-injection guard) |
-| 8 | Remote MCP server tools | ✅ | `core/mcp_client.py` (default DeepWiki, opt-in) |
-| 9 | Rate limiting + API-key management | ✅ | token-bucket limiter (`ratelimit.py`); keys via `.env` with a live status panel |
-| 10 | Logging + monitoring | ✅ | append-only JSONL run log (`runlog.py`) + Settings toggle |
+| 7 | Export to PDF, CSV, JSON | ✅ | `export.py` (PDF via fpdf2; CSV formula-injection guard) |
+| 8 | Remote MCP server tools | ✅ | `core/mcp_client.py`, DeepWiki by default, opt-in |
+| 9 | Rate limiting and key management | ✅ | token-bucket limiter (`ratelimit.py`), live key status panel |
+| 10 | Logging and monitoring | ✅ | append-only JSONL run log (`runlog.py`) with a Settings toggle |
 
 **Hard**
 
 | # | Task | Status | Where |
 |---|---|---|---|
-| 1 | Hybrid search | ✅ | vector + BM25 blend with an `alpha` dial (`rag/retriever.py`) |
+| 1 | Hybrid search | ✅ | vector and BM25 blended with an `alpha` dial (`rag/retriever.py`) |
 | 2 | A/B testing of RAG strategies | ✅ | `eval/compare.py`, 🆚 A/B testing page |
-| 7 | RAG evaluation (RAGAs or otherwise) | ✅ | self-hosted 4-metric LLM-as-judge harness (`src/eval/`) |
-| 6 | Tools exposed *as* an MCP server | ✅ | `mcp_server.py` — FastMCP publishes every `ALL_TOOLS` entry; run with `make mcp-serve` |
-| 3 | Automated KB updates | ◑ *partial* | CRAG auto-fetches external passages; promotion into the permanent KB is **human-approved**, not scheduled |
-| 5 | Advanced analytics dashboard | ◑ *partial* | session token/cost + JSONL log; not a historical/aggregated dashboard |
+| 3 | Automated KB updates | ◑ partial | CRAG auto-fetches passages, but promotion into the permanent KB is human-approved, not scheduled |
+| 4 | Multi-language support | ✗ not attempted | the KB, prompts and domain gate are English-only |
+| 5 | Advanced analytics dashboard | ◑ partial | session token and cost plus the JSONL log, but nothing historical or aggregated |
+| 6 | Tools exposed as MCP servers | ✅ | `mcp_server.py`, FastMCP publishes every `ALL_TOOLS` entry (`make mcp-serve`) |
+| 7 | RAG evaluation, RAGAs or otherwise | ✅ | self-hosted four-metric LLM-as-judge harness (`src/eval/`) |
 
-
-
-### Extras not required by the spec
-
-- **🔬 AI/ML Lab** — a hands-on workspace with parameterised recipes (viz, train-a-classifier,
-  clustering, a small neural net), six bundled toy datasets, LLM-seeded exercises, and a
-  **restricted in-process code runner** with an allow-listed import/builtin surface (a guardrail
-  against accidents, explicitly *not* a hardened security sandbox). `src/lab/`
-- **🎯 Trivia** — knowledge-base-grounded multiple-choice quizzes: passages are retrieved, an LLM
-  writes validated MCQ items via structured output, each carries a source citation, and grading
-  is pure/deterministic. `src/quiz/`
-- **KB promotion** — approved external passages are written back as curated notes *and* added to
-  the live index at once, so good finds become permanent, searchable knowledge. `src/rag/promote.py`
-
-
+**Extras beyond the spec:** the 🔬 AI/ML Lab (parameterised recipes, six toy datasets, LLM-seeded
+exercises, and a restricted in-process code runner), 🎯 Trivia (KB-grounded MCQs written through
+structured output, each with a citation, graded deterministically), and KB promotion, which
+writes an approved external passage back as a curated note *and* adds it to the live index at
+once.
 
 ---
+
 ## Current limitations
-Below, I list some potential areas for improvement that could be considered in future work.
 
+Areas I would look at next.
 
-- **Run `make ingest` first**, and re-run it after changing documents *or* the embedding
-  backend/model (a different embedder produces differently-sized number-lists, so the old search
-  index no longer matches).
-- **Costs and token counts are estimates.** Cost comes from a static price table (update it as
-  prices change); token counts are heuristic where the provider doesn't return usage. Agent
-  planning tokens are approximated and folded onto the exact synthesis usage.
-- **Web search and remote MCP cost money / need network,** and are **off by default** — turn them
-  on deliberately. MCP additionally needs the optional `langchain-mcp-adapters` dependency and a
-  reachable server; it fails soft to an empty tool list.
-- **The domain gate is deliberately conservative** — it may occasionally refuse a borderline
-  question rather than risk answering off-domain.
-- **Prompt-injection defence is layered, not absolute.** Classifier + patterns + system-prompt
-  hardening + domain gate reduce risk but do not eliminate it — treat model output accordingly.
-- **The starter KB is a curated set of study notes** (23 docs across ml/dl/ai/overlap). Add real
-  papers via 📄 Knowledge Base or the `data/` folders and re-index for production use.
-- **Evaluation & A/B testing make many LLM calls** — roughly one answer plus ~6 judge calls per
-  question — so they cost tokens, and an A/B run costs about double a single evaluation. They run
-  **concurrently over a thread pool** (a **⚡ Parallel requests** slider on both pages, default 8),
-  which cuts wall-clock sharply since the work is network-bound; every judge call also has
-  transient-failure retry with backoff. Set the slider to `1` for strictly sequential behaviour,
-  or lower it if a cheap judge model starts rate-limiting.
-- **Accounts need a provider, and saved chats need a volume** — sign-in is real but delegated:
-  with no `[auth]` provider configured the login buttons render disabled, and the password-gate
-  fallback (`[password_auth]`) has no self-service sign-up because `st.secrets` is read-only on
-  Community Cloud. 🕘 Past chats are stored per visitor on the local filesystem, which Community
-  Cloud wipes on redeploy unless `SYNAPSE_CHAT_DIR` points at a mounted volume. Personalisation
-  (⚙️ Settings) remains per-session rather than tied to an account.
-- **The Lab's code runner is a guardrail, not a hardened sandbox** — it restricts imports and
-  builtins to catch accidents, not to contain a determined adversary. It is a local learning tool.
-- **Answers are returned complete, not streamed** token-by-token, because of the tool-calling loop.
+- **Run `make ingest` first**, and again after changing documents or the embedding backend. A
+  different embedder produces differently-sized vectors, so the old index no longer matches.
+- **`pyproject.toml` pins `streamlit>=1.36`, below what two features need.** Native sign-in wants
+  1.42+, and the light/dark theme split wants 1.45+. Installing at the floor gives an app where
+  both silently do nothing. Raising the floor is the fix.
+- **Costs and token counts are estimates.** Cost comes from a static price table, so it needs
+  updating as prices change, and token counts are heuristic wherever the provider returns no usage.
+- **Web search and remote MCP cost money and need network**, and both are off by default. MCP also
+  needs the optional `langchain-mcp-adapters` dependency and a reachable server, and fails soft to
+  an empty tool list.
+- **The domain gate is deliberately conservative.** It will sometimes refuse a borderline question
+  rather than risk answering off-domain.
+- **Prompt-injection defence is layered, not absolute.** The classifier, patterns, hardened prompt
+  and domain gate reduce the risk without eliminating it.
+- **The starter KB is 23 curated study notes.** For production use, add real papers through
+  📄 Knowledge Base or the `data/` folders and re-index.
+- **Evaluation and A/B testing make a lot of LLM calls**, roughly one answer plus about six judge
+  calls per question, so an A/B run costs about double a single evaluation. They run concurrently
+  over a thread pool (a ⚡ Parallel requests slider, default 8), with retry and backoff on every
+  judge call. Set it to 1 for sequential behaviour, or lower if a cheap judge starts rate-limiting.
+- **Accounts need a provider, saved chats need a volume.** With no `[auth]` provider the login
+  buttons render disabled, and Community Cloud wipes `outputs/chat_history` on redeploy unless
+  `SYNAPSE_CHAT_DIR` points at a mounted volume.
+- **The Lab's code runner is a guardrail, not a hardened sandbox.** It restricts imports and
+  builtins to catch accidents, not to contain a determined adversary.
+- **Answers arrive complete rather than streamed**, because of the tool-calling loop.
+- **English only.** The KB, the prompts and the domain gate all assume it.
 
 ---
 
-## AI/ML Assistant App Preview
+## App preview
 
-![AI/ML Assistant App Screenshot](AI-ML-CHAT.png)
----
-
-
-
+![Synapse, the AI Chat workspace](AI-ML-CHAT.png)
