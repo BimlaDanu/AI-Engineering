@@ -1,0 +1,109 @@
+[project]
+name = "ai-ml-assistant"
+version = "0.1.0"
+description = "Domain-focused RAG chatbot with tool calling for advance AI/ML learning assistant"
+requires-python = ">=3.11"
+dependencies = [
+    # Core
+    "langchain>=0.3",
+    "langchain-openai>=0.2",
+    "langchain-community>=0.3",
+    "langchain-chroma>=0.1",
+    "langchain-google-genai>=4.2.7",
+    "chromadb>=0.5",
+    # Embeddings (local, free)
+    "sentence-transformers>=3.0",
+    # UI
+    "streamlit>=1.36",
+    # Optional login gate (src/auth.py) — a self-contained username/password gate that is OFF
+    # by default and only activates when an [auth] secret is present (deployed use). Gives
+    # cookie-persisted sessions (survive browser refresh), bcrypt-hashed passwords, and a
+    # sidebar logout. Run `make sync` after adding. Until installed, auth stays dormant: the
+    # library is imported lazily, so a disabled gate never touches it.
+    "streamlit-authenticator>=0.4",
+    # Native OpenID Connect for `st.login()` / `st.user` (Streamlit >= 1.42) — this is what
+    # makes the top bar's "Log in" / "Sign up for free" real on a deployment: the provider
+    # (Google, Auth0, Microsoft, Okta) owns the accounts, so Synapse stores no passwords and
+    # sign-up is handled at the provider. Streamlit imports authlib itself when an [auth]
+    # section is present; with none configured the buttons render disabled and this is unused.
+    # Run `make sync` after adding.
+    "authlib>=1.3.2",
+    # Tools
+    "sympy>=1.13",
+    "scipy>=1.13",
+    "pint>=0.24",
+    # ML Lab — hands-on ML/DL/NLP recipes + restricted code cell (src/lab/, 🔬 ML Lab page).
+    # scikit-learn ships the toy datasets and models; pandas holds the frames; matplotlib
+    # draws the figures. numpy comes transitively. Run `make sync` after adding these.
+    "scikit-learn>=1.4",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
+    # Document loading
+    "pypdf>=4.0",
+    "arxiv>=2.1",
+    # Export — fpdf2 generates the downloadable PDF conversation transcript (src/export.py).
+    # (pypdf above only reads/manipulates existing PDFs; it cannot lay out a new one.)
+    "fpdf2>=2.7",
+    # Remote tools (MCP) — enables the dormant remote MCP client in src/core/mcp_client.py.
+    # langchain-mcp-adapters converts a remote MCP server's tools into LangChain tools; `mcp`
+    # is its protocol/transport peer. Until installed, load_mcp_tools() fails soft to [].
+    "langchain-mcp-adapters>=0.1",
+    "mcp>=1.0",
+    # Config
+    "python-dotenv>=1.0",
+]
+
+[dependency-groups]
+# Dev-only tools (installed by `uv sync`, excluded from a `--no-dev` install)
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.6",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+# conftest.py sits at the repository root, outside both `src` and `tests`, so name it
+# explicitly or `make lint` walks straight past it.
+extend-include = ["conftest.py"]
+
+[tool.ruff.lint]
+# E/F  pycodestyle + pyflakes     I    import sorting        UP   pyupgrade
+# B    bugbear                    SIM  simplify              C4   comprehensions
+# RET  return paths               PERF obvious slow paths    PTH  pathlib over os.path
+# RUF  Ruff's own rules           ICN  import conventions    ERA  commented-out code
+# S    bandit (security)          TRY  exception handling
+select = [
+    "E", "F", "I", "UP", "B",
+    "SIM", "C4", "RET", "PERF", "PTH", "RUF", "ICN", "ERA", "S", "TRY",
+]
+ignore = [
+    # Typography, not ambiguity. The prose here uses —, …, → and ’ on purpose; these rules
+    # exist to catch homoglyphs in identifiers, not en-dashes in a docstring.
+    "RUF001", "RUF002", "RUF003",
+    # "Avoid long messages outside the exception class." Every raise in this project is read
+    # by a person through the UI's error surface, so the sentence belongs at the raise site.
+    "TRY003",
+    # "Return the negated condition directly." The two filter predicates it fires on are a
+    # column of independent facet rejections; folding them into one boolean expression
+    # (`not (filters and not filters.passes(meta))`) is shorter and markedly harder to read.
+    "SIM103",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# A test is assert-driven by definition, and a credential in a test is a fixture, not a leak.
+"tests/**" = ["S101", "S105", "S106"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# -q          the pass/fail line, not 403 rows of it
+# -ra         a summary of anything not plain-passed, so a skip cannot hide
+# --strict-markers / --strict-config  a typo'd @pytest.mark or ini key fails instead of
+#             silently doing nothing, which is how a test quietly stops running
+addopts = "-q -ra --strict-markers --strict-config"
+filterwarnings = [
+    # Surface this project's own deprecations as failures; third-party ones are not ours to
+    # fix and would make the suite hostage to an upstream release.
+    "default",
+    "error::DeprecationWarning:src.*",
+]

@@ -1,0 +1,80 @@
+# ═══════════════════════════════════════════════════════════
+#  Synapse — CI gate
+#
+#  Runs `make check` itself (lint → format → tests) rather than re-spelling
+#  it, so the gate here and the gate in a developer's terminal cannot drift —
+#  an earlier copy of these steps had already lost `conftest.py` from the lint
+#  target. Everything runs offline: the tests inject fake LLMs/KB/tools, so NO
+#  API keys or secrets are needed — never add them to this workflow.
+#
+#  Deliberately uses ONLY first-party `actions/*` steps and installs uv with
+#  pip. Organisations often restrict Actions to "actions created by GitHub",
+#  which makes any third-party action (e.g. astral-sh/setup-uv) unresolvable
+#  and fails the run at startup, before a single step logs anything.
+#
+#  Run the identical gate locally before pushing:  make check
+# ═══════════════════════════════════════════════════════════
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch: # lets you re-run the gate by hand from the Actions tab
+
+# A newer push to the same branch cancels the older, still-running check.
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: lint + format + tests (py3.11)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      # Make uv build its .venv on the interpreter setup-python just installed
+      # instead of downloading one of its own.
+      UV_PYTHON: "3.11"
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      # The dependency tree is heavy (torch via sentence-transformers, chromadb),
+      # so a warm uv cache is the difference between ~1 and ~6 minutes.
+      - name: Cache uv downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: uv-${{ runner.os }}-py311-${{ hashFiles('uv.lock') }}
+          restore-keys: uv-${{ runner.os }}-py311-
+
+      - name: Install uv
+        run: python -m pip install --upgrade uv
+
+      # --locked fails if uv.lock has drifted from pyproject.toml, so a
+      # dependency edit that was never `make sync`-ed is caught as an error.
+      - name: Sync environment
+        run: uv sync --locked
+
+      # The three targets `make check` is made of, called by name rather than
+      # re-spelled as raw ruff/pytest commands. Same gate, no second copy of it to
+      # drift; still three steps, so the Actions UI says which one failed. The
+      # Makefile wraps each in `env -u VIRTUAL_ENV uv run`, which is right here too:
+      # the runner has no activated venv and uv uses the one synced above.
+      - name: Ruff lint
+        run: make lint
+
+      - name: Ruff format check
+        run: make format-check
+
+      - name: Tests
+        run: make test

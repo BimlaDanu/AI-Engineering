@@ -1,0 +1,89 @@
+# Secrets 
+.env
+.env.*
+
+# Virtual environment
+.venv/
+venv/
+env/
+Iapp_env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.py[cod]
+*$py.class
+
+
+# Ruff
+.ruff_cache/
+
+# MyPy
+.mypy_cache/
+
+# Pyright
+.pyright
+
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+
+#Others
+*.key
+*.pem
+secrets/
+credentials/
+*.hdf5
+*.npz
+*.txt
+1_ROADMAP.md
+
+# Eval runner output (raw model responses — never commit)
+eval_results*.json
+
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Uploaded files / scratch
+*.pdf
+
+#Ignore
+CLAUDE.md
+
+# Logs
+*.log
+
+# Personal learning scratch — not part of the project
+ML-AI-Assistant/
+EXTRAS/
+Templates/
+Files_TEST/
+flagged/
+PROMPT-WORKING/
+chroma_db/
+
+# Optional generated data/models (uncomment if needed)
+models/
+outputs/
+
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+.streamlit/secrets.toml
+.streamlit/secrets.toml.example

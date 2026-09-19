@@ -1,0 +1,49 @@
+# ═══════════════════════════════════════════════════════════
+#  Synapse — declared theme, in two variants
+#
+#  Until this file existed the app declared no theme at all, so it followed
+#  whatever the browser asked for while every colour in src/ui/theme.py was a
+#  hardcoded violet at low alpha, tuned against white. In dark mode the tab
+#  pills and the workspace cards were washing out to nearly nothing.
+#
+#  Pinning a palette settles that. But a *single* [theme] block pins more than
+#  the colours: Streamlit drops its three built-in themes when an app declares
+#  one of its own, and it only offers the System / Light / Dark switch when at
+#  least two remain. One declared theme therefore left exactly one on the list
+#  and the appearance control disappeared from the ⋮ menu entirely — the app
+#  was dark for everyone, with no way back, including for a reader whose
+#  machine is set to light.
+#
+#  So the palette is declared twice. [theme.light] and [theme.dark] give
+#  Streamlit two themes to name, which restores the switch and makes "System"
+#  (follow the OS) the default for a reader who has never chosen. Anything
+#  shared sits in [theme] below and is inherited by both.
+#
+#  The palette is the brand gradient's own violet, pitched to its background:
+#  #7c3aed reads muddy on #0e1117, and #8b5cf6 is thin on white.
+#
+#  src/ui/theme.py keeps its accents as alpha over whatever sits behind them,
+#  so both variants get an app built for their background rather than one
+#  tuned for a single surface and tolerated on the other.
+# ═══════════════════════════════════════════════════════════
+[theme]
+# Inherited by both variants. Colours belong in the two blocks below, not here:
+# a colour set at this level applies to light and dark alike, which is how a
+# dark background ends up behind light-mode text.
+font = "sans serif"
+
+[theme.light]
+primaryColor = "#7c3aed"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f3f1fa"
+textColor = "#1f2330"
+
+[theme.dark]
+primaryColor = "#8b5cf6"
+backgroundColor = "#0e1117"
+secondaryBackgroundColor = "#181b26"
+textColor = "#e6e8ee"
+
+[browser]
+# Nothing about a local learning assistant needs reporting upstream.
+gatherUsageStats = false
