@@ -1,10 +1,11 @@
 """A tiny registry that lets workspace pages plug themselves into the app.
 
-Each page module decorates its render function with :func:`register_page`. The entry point
-(``app.py``) calls :func:`get_pages` to build the flat, ordered sidebar navigation, while the
-🏠 Home dashboard calls :func:`get_sections` to render the same pages *grouped* by ``section``.
-Adding, removing, or reordering a workspace touches only its own module — both the sidebar and
-the Home overview follow automatically.
+Each page module decorates its render function with :func:`register_page`. Both surfaces that
+list the workspaces — the sidebar navigation built in ``app.py`` and the 🏠 Home dashboard —
+read the same :func:`get_sections` grouping, so neither can drift out of step with the other.
+:func:`get_pages` is the flat ordering underneath it, still used where a plain list of every
+workspace is what is wanted. Adding, removing, or reordering a workspace touches only its own
+module; the sidebar and the Home overview follow automatically.
 """
 
 from __future__ import annotations
@@ -86,9 +87,9 @@ def _section_rank(section: str) -> tuple[int, str]:
 def get_sections() -> dict[str, list[Page]]:
     """Group registered pages into ``{section: [pages sorted by order]}``.
 
-    Sections are ordered by :data:`SECTION_ORDER` (then alphabetically for any extra); the
-    🏠 Home dashboard renders this as grouped cards. (The sidebar itself is a flat list built
-    from :func:`get_pages`, so it stays uncluttered — Home is the grouped-by-area overview.)
+    Sections are ordered by :data:`SECTION_ORDER` (then alphabetically for any extra). The
+    🏠 Home dashboard renders this as grouped cards and the sidebar as grouped navigation
+    links — one grouping, drawn twice, which is the point of routing both through here.
     """
     sections: dict[str, list[Page]] = {}
     for page in get_pages():

@@ -2,13 +2,26 @@
 
 [![CI — lint · format · tests](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml)
 
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://docs.streamlit.io/)
+[![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?logo=langchain&logoColor=white)](https://python.langchain.com/docs/introduction/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C)](https://langchain-ai.github.io/langgraph/)
+[![Chroma](https://img.shields.io/badge/Chroma-FF6F61)](https://docs.trychroma.com/)
+[![OpenRouter](https://img.shields.io/badge/OpenRouter-6566F1?logo=openrouter&logoColor=white)](https://openrouter.ai/docs/quickstart)
+[![uv](https://img.shields.io/badge/uv-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
+[![Ruff](https://img.shields.io/badge/Ruff-D7FF64?logo=ruff&logoColor=black)](https://docs.astral.sh/ruff/)
+
+Every badge above links to that tool's own documentation, so the stack can be explored
+without first reading the rest of this page.
+
+
 Synapse is a **domain-specialised RAG chatbot** that assists with machine learning, deep learning, and AI engineering concepts. Instead of guessing, it **retrieves** answers from a curated knowledge base and **cites its sources**. When it doesn't know the answer, it says so plainly rather than inventing one.
 
 > **Grounded · Cited · Honest** — every factual answer either points to the passages it came
 > from, or states its uncertainty. Off-topic questions and prompt-injection attempts are
 > refused.
 
-Built with **Python 3.11+, Streamlit, LangChain, LangGraph, and Chroma**. This project was developed as part of the Turing College Sprint 2 programme, based on the assignment brief in [125.md](125.md).
+Built with **[Python 3.11+](https://www.python.org/downloads/), [Streamlit](https://docs.streamlit.io/), [LangChain](https://python.langchain.com/docs/introduction/), [LangGraph](https://langchain-ai.github.io/langgraph/), and [Chroma](https://docs.trychroma.com/)**. This project was developed as part of the Turing College Sprint 2 programme, based on the assignment brief in [125.md](125.md).
 
 <details>
 <summary><b>New to the terms?</b> — A simply put English glossary (click to expand)</summary>
@@ -294,13 +307,13 @@ Streamlit session runs in its own thread, and a global would let one visitor's k
 another visitor's question.
 
 **Personalisation and saved conversations.** ⚙️ Settings is still per-session. What is now kept
-across a visit is the **conversation**: 🕘 Past chats in the sidebar lists every thread, newest
-first, with a per-thread delete and a **Delete all**, each taking two presses. Threads are one
-JSON file each under `outputs/chat_history/`, in a **directory per visitor** keyed by a hash of
-their identity — on a deployment everyone shares one filesystem, and that is the only thing
-keeping their questions apart. On Community Cloud that filesystem is **ephemeral**: threads
-survive refreshes and reconnections and are wiped on reboot or redeploy, so point
-`SYNAPSE_CHAT_DIR` at a mounted volume if they need to outlive one.
+across a visit is the **conversation**, in the 🕘 Past chats panel in the sidebar (described
+under [Explore the workspaces](#explore-the-workspaces)). Threads are one JSON file each under
+`outputs/chat_history/`, in a **directory per visitor** keyed by a hash of their identity: on a
+deployment everyone shares one filesystem, and that hash is the only thing keeping their
+questions apart. On Community Cloud that filesystem is **ephemeral**, so threads survive
+refreshes and reconnections but are wiped on reboot or redeploy. Point `SYNAPSE_CHAT_DIR` at a
+mounted volume if they need to outlive one.
 
 ### The app's top-right controls
 
@@ -323,39 +336,77 @@ it still fits. The right offset clears Streamlit's **Stop** button as well as De
 one neighbour it must never cover, since a reader watching a long retrieval has to be able to
 stop it.
 
-**Streamlit's own menu** is unchanged and still to their right: *Rerun*, *Settings* — where the
-**Light / Dark / Use-system-setting** theme switch lives, along with wide mode — *Print* and
-*About*. Synapse ships no custom theme toggle; its hero banner and CSS are styled to read cleanly
-under both themes, so the native switch just works.
+**Streamlit's own ⋮ menu** stays to their right, and that is where the
+**System / Light / Dark** appearance switch lives, alongside *Rerun*, *Print* and *About*.
+Synapse adds no theme toggle of its own, but it does have to earn that switch. Streamlit
+discards its three built-in themes the moment an app declares one, and it draws the switch only
+while more than one theme is left, so a single `[theme]` block silently removes the control and
+locks every reader into whatever the app declared. `.streamlit/config.toml` therefore declares
+the palette twice, as `[theme.light]` and `[theme.dark]`. That gives Streamlit two themes to
+name, restores the switch, and makes **System** (follow the reader's OS) the default for anyone
+who has never chosen. The CSS in `src/ui/theme.py` keeps its accents as alpha over whatever sits
+behind them, so both variants get an app built for their background rather than one tuned for a
+single surface and tolerated on the other. `tests/test_theme_config.py` pins the split, since
+nothing in the app reads those values and nothing would otherwise notice them being merged back.
 
 
 ---
 
 ## Explore the workspaces
 
-A multi-page Streamlit studio. The sidebar is **grouped**, in the shape most chat apps have
-settled on: **🧭 AI/ML Research Assistant** (🏠 Home, 💬 AI Chat) at the top, then **Learn**
-(🎓 Tutor, 🔬 Lab, 🎯 Trivia), **Analyse** (📈 Analytics, 📊 Evaluation, 🆚 A/B testing,
-🧪 Experiments), **Knowledge** (📰 AI News, 📚 Stacks, 📄 Knowledge Base), and **System**
-(⚙️ Settings) last. The sidebar and the 🏠 Home cards are both built from the same
-`get_sections()` grouping, so they cannot drift apart. Adding a workspace is one file in
-`src/ui/pages/` with a `@register_page` decorator — the sidebar and Home update automatically.
+A multi-page Streamlit studio. Everything a reader navigates with lives in the sidebar, which
+is built top to bottom from four pieces:
 
-| Area | Workspace | Intended use |
+| Sidebar, top to bottom | What it is |
+|---|---|
+| **Synapse glyph** | The brand mark, pinned above the navigation by `st.logo`. Glyph only, because the navigation heading right under it already carries the name |
+| **Grouped navigation** | The thirteen workspaces, under five headings (the table below) |
+| **🕘 Past chats** | This visitor's saved conversations, newest first, with a per-thread delete and a **Delete all** |
+| **Grounded · Cited · Honest** | A one-line signature at the foot, with a pulsing synapse beside it |
+
+The navigation is **grouped**, in the shape most chat apps have settled on: what you came to do
+at the top, the machinery underneath, the knobs at the bottom. Group order comes from
+`registry.SECTION_ORDER` and page order from each page's `order` field.
+
+| Sidebar group | Workspace | Intended use |
 |---|---|---|
-| **Workspaces** | 🏠 Home | Landing dashboard: KB/session status and jump-in cards |
-| | 💬 AI Chat | The main assistant — cited answers, tool cards, model + per-answer settings, export |
-| | 🎓 AI/ML Tutor | Guided, level-aware learning paths |
+| **🧭 AI/ML Research Assistant** | 🏠 Home | Landing dashboard: KB/session status and jump-in cards |
+| | 💬 AI Chat | The main assistant: cited answers, tool cards, model + per-answer settings, export |
+| **Learn** | 🎓 AI/ML Tutor | Guided, level-aware learning paths |
 | | 🔬 AI/ML Lab | Hands-on recipes, LLM exercises, and a live code cell |
 | | 🎯 Trivia | KB-grounded quizzes with instant feedback |
-| **Knowledge** | 📚 Stacks | Evergreen **courses, tools & references** per subject (→ 🎓 Tutor for lessons, 📰 AI News for live papers) |
-| | 📰 AI News | Stay **current** — live arXiv papers, plus lab newsrooms, digests, and voices to follow |
-| **Analyze & Experiment** | 📈 Analytics | **Session-wide** token usage and cost across every answer (per-question breakdown lives in 🧪 Experiments) |
+| **Analyse** | 📈 Analytics | **Session-wide** token usage and cost across every answer (per-question breakdown lives in 🧪 Experiments) |
 | | 📊 Evaluation | Score **one** RAG configuration in absolute terms over the golden set |
 | | 🆚 A/B testing | Compare **two** RAG strategies head-to-head under one shared judge |
-| | 🧪 Experiments | Inspect **one** question end-to-end: full trace + a playground to fire each tool call standalone (incl. the arXiv tool call) |
-| **System** | 📄 Knowledge Base | Inspect/upload/re-index docs; promote external passages |
-| | ⚙️ Settings | Model, generation, RAG tuning, engine, MCP, status |
+| | 🧪 Experiments | Inspect **one** question end-to-end: full trace plus a playground to fire each tool call standalone (incl. the arXiv tool call) |
+| **Knowledge** | 📰 AI News | Stay **current**: live arXiv papers, plus lab newsrooms, digests, and voices to follow |
+| | 📚 Stacks | Evergreen **courses, tools & references** per subject (→ 🎓 Tutor for lessons, 📰 AI News for live papers) |
+| | 📄 Knowledge Base | Inspect/upload/re-index docs; promote external passages |
+| **System** | ⚙️ Settings | Model, generation, RAG tuning, engine, MCP, status |
+
+The sidebar and the 🏠 Home cards are the *same* grouping drawn twice: both call
+`registry.get_sections()`, so they cannot fall out of step. Adding a workspace is one file in
+`src/ui/pages/` with a `@register_page` decorator, and it appears in both.
+
+### 🕘 Past chats
+
+The panel under the navigation, on every page, because a reader who asks something and then
+walks over to 📊 Evaluation has still had that conversation and should still find it. The
+current thread is written out on every run, so **🆕 New chat** in the top bar never destroys
+anything: what just left the screen becomes the top row here.
+
+- **Newest first, capped at 12 rows.** The list is capped, the store is not. Every row is two
+  widgets rebuilt on every rerun of every page, so an unbounded list makes the whole sidebar
+  feel like it is ignoring clicks once a few dozen conversations pile up. The panel says how
+  many it is not showing, and **Delete all** reaches those too.
+- **Every delete takes two presses.** Moving a dial is reversible by moving it back; these two
+  controls rewrite the filesystem, and their reward for a misclick is losing the thing the
+  reader opened the panel to find. The pending state is keyed per thread rather than held as
+  one shared flag, which would arm the row immediately below the one just pressed.
+- **One JSON file per thread**, in a directory per visitor keyed by a hash of their identity.
+  On a deployment everyone shares one filesystem, and that hash is the only thing keeping their
+  questions apart. Where the host's filesystem is not writable the panel says so plainly rather
+  than quietly keeping nothing.
 
 ---
 
@@ -370,7 +421,7 @@ one-line note on what it does.
 src/                      # all application code
 │
 │  ── top-level modules (shared by every workspace) ──
-├── app.py                # Streamlit entry point: builds the page registry and sidebar brand
+├── app.py                # Streamlit entry point: wires the top bar, grouped sidebar, and page
 ├── config.py             # one home for paths, the model + price list, and tunable defaults
 ├── generation.py         # learner-level prompts, answer styling, and the RAG + tool-calling loop
 ├── llm.py                # chat-model factory: OpenRouter by default, native Gemini optional
@@ -392,6 +443,7 @@ src/                      # all application code
 │   ├── agent.py          #   opt-in bounded plan → act → observe loop
 │   ├── sources.py        #   pluggable external sources for CRAG augmentation (arXiv, web)
 │   ├── mcp_client.py     #   remote MCP client: borrow a remote server's tools for the loop
+│   ├── chats.py          #   saved conversations: one JSON per thread, a directory per visitor
 │   └── service.py        #   AssistantService — runs one request, owns its cost + trace
 │
 ├── rag/                  # retrieval: from raw documents to ranked, citable passages
@@ -432,6 +484,8 @@ src/                      # all application code
     ├── registry.py       #   @register_page + get_sections + go_to_page (cross-page jumps)
     ├── state.py          #   session-state setup and cached access to the knowledge base
     ├── theme.py          #   shared look: brand mark, injected CSS, hero banner, footer
+    ├── account.py        #   the top bar: New chat, Log in, Sign up, Use a key, account menu
+    ├── past_chats.py     #   🕘 Past chats sidebar panel, autosave, and two-press deletes
     ├── exporters.py      #   shared JSON / CSV / PDF download buttons
     ├── models.py         #   shared model picker — ⚙️ Settings and the Chat popover, one key
     └── pages/            #   one module per workspace (drop one in and it auto-registers)
