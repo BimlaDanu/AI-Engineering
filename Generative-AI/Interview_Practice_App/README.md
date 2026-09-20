@@ -305,17 +305,24 @@ in the monorepo, [`.github/workflows/check.yml`](.github/workflows/check.yml) st
 
 `make check` reproduces steps 3 and 4 locally before you push.
 
-There are two copies of that workflow, because the project is pushed to two places.
-[`.github/workflows/check.yml`](.github/workflows/check.yml) here is the one that runs
-when the app is a repository of its own, and it assumes the app is the repository root.
-GitHub only reads `.github/workflows/` from the repository root, so inside the
-`AI-Engineering` monorepo that copy is an ordinary folder and the live gate is
-[`check-interview-practice-app.yml`](https://github.com/BimlaDanu/AI-Engineering/blob/main/.github/workflows/check-interview-practice-app.yml) at the monorepo root. It adds three things: a
-`working-directory` default pushing every `run` step down into
-`Generative-AI/Interview_Practice_App`, path filters so a sibling project's commit does
-not trigger it, and a cache key spelled out to this project's `uv.lock`. Each project in
-the monorepo has one such file and its own badge, so a red run names the project. The
-steps are the same in both copies, so a change to one wants the same change in the other.
+The steps above live in one file, and it is in this directory:
+[`.github/actions/check/action.yml`](.github/actions/check/action.yml), a composite
+action. The workflows that call it are stubs.
+
+That split exists because GitHub starts workflows only from `.github/workflows/` at the
+*repository* root and treats a `.github` folder further down as an ordinary folder. A
+local action, on the other hand, can sit at any path. So the gate itself belongs to the
+project, and each place the project gets pushed contributes only a trigger:
+
+| Entry point | Where | Calls |
+|---|---|---|
+| [`check-interview-practice-app.yml`](https://github.com/BimlaDanu/AI-Engineering/blob/main/.github/workflows/check-interview-practice-app.yml) | monorepo root | `./Generative-AI/Interview_Practice_App/.github/actions/check` with `working-directory` set to the project |
+| [`.github/workflows/check.yml`](.github/workflows/check.yml) | here | `./.github/actions/check`, `working-directory` defaulting to `.` |
+
+Each holds a trigger, a `paths` filter and `permissions`, which are workflow-level keys a
+composite action cannot carry, and nothing else. Nothing is duplicated, so a change to the
+gate is one edit in this directory. In the monorepo every project has its own stub and its
+own badge, scoped by `paths`, so projects never trigger or cancel one another.
 
 uv handles the interpreter on its own; there's no separate `setup-python` step, because
 two tools choosing an interpreter when only one of them is consulted by `uv sync` is a
@@ -467,10 +474,12 @@ and `evals.py` can all share it.
 - **`Makefile`** — thin wrappers: `sync`, `run`, `test`, `lint`, `format`, `check`,
   `eval`, `clean`. `make help` lists them.
 - **`.python-version`** — the interpreter version (3.11) uv and CI both resolve against.
-- **[`.github/workflows/check.yml`](.github/workflows/check.yml)** — the CI workflow
-  behind the badge, for when this app is its own repository. The monorepo keeps a
-  [second copy](https://github.com/BimlaDanu/AI-Engineering/blob/main/.github/workflows/check-interview-practice-app.yml)
-  at its root, which is the one that actually runs there.
+- **[`.github/actions/check/action.yml`](.github/actions/check/action.yml)** — the CI
+  gate itself: uv, the lockfile, Ruff, pytest. The one place to edit it.
+  - **[`.github/workflows/check.yml`](.github/workflows/check.yml)** — the stub that calls
+    it when this app is its own repository. The monorepo has its own stub
+    ([`check-interview-practice-app.yml`](https://github.com/BimlaDanu/AI-Engineering/blob/main/.github/workflows/check-interview-practice-app.yml)) at the repository root, because GitHub
+    starts workflows from there and nowhere else.
 - **[`.streamlit/config.toml`](.streamlit/config.toml)** — non-secret UI and server defaults: theme, the ⋮ menu,
   opening the browser on launch, a 10 MB upload cap, telemetry off. No secrets live here. The key stays in `.env`, and
   `.streamlit/secrets.toml` is git-ignored.

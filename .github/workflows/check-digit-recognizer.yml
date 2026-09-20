@@ -24,7 +24,7 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: check-digit-recognizer-${{ github.ref }}
   cancel-in-progress: true
 
 defaults:

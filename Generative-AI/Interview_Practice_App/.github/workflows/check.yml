@@ -1,72 +1,41 @@
-# Lint and unit tests for the Interview Practice app.
+# Interview Practice App — CI gate (standalone entry point).
 #
-# This copy assumes the app is the repository root, which is the case when the
-# project is pushed as a repository of its own. In the AI-Engineering monorepo
-# the app sits in a subdirectory, and GitHub only reads .github/workflows/ from
-# the root, so the copy that actually runs there lives at the monorepo root and
-# adds a working-directory default and path filters.
+# This copy is what runs when the app is pushed as a repository of its own,
+# where the app is the repository root. Inside the AI-Engineering monorepo it
+# is inert, because GitHub reads .github/workflows only from the repository
+# root; there the entry point is .github/workflows/check-interview-practice-app.yml
+# at that root.
 #
-# No API key and no network are needed: the tests run against fake clients.
-# The Streamlit app and evals.py are left out on purpose, because they make
-# real OpenRouter calls and cost money.
+# Both entry points call the same composite action, so there is one copy of the
+# steps and nothing to keep in sync. Edit the gate in:
+#   .github/actions/check/action.yml
 name: check
 
 on:
   push:
     branches: [main]
   pull_request:
-    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
-# A second push to the same branch cancels the run still in flight.
 concurrency:
-  group: check-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   check:
-    name: Ruff + pytest
+    name: lint + tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     steps:
+      # A local action is read from the checked-out tree, so this comes first.
       - name: Check out the repository
         uses: actions/checkout@v5
 
-      # uv resolves the interpreter itself from .python-version and downloads
-      # 3.11 if the runner lacks it. There is deliberately no setup-python
-      # step: two tools picking an interpreter when only one of them is
-      # consulted by `uv sync` is how you get a green laptop and a red runner.
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          enable-cache: true
-          cache-dependency-glob: uv.lock
-
-      # Reads .python-version and fetches 3.11 if the runner lacks it.
-      - name: Install the pinned interpreter
-        run: uv python install
-
-      - name: Build the environment from the lockfile
-        run: |
-          uv sync --frozen || {
-            echo "::error title=uv sync::uv.lock does not match pyproject.toml. Run 'uv lock' locally and commit the result."
-            exit 1
-          }
-
-      - name: Ruff
-        run: |
-          uv run ruff check Iapp.py auth.py core.py categories.py evals.py jailbreak_experiment.py tests || {
-            echo "::error title=Ruff::Lint failed. Reproduce with 'make lint'; 'make format' fixes most of it."
-            exit 1
-          }
-
-      - name: Pytest
-        run: |
-          uv run pytest || {
-            echo "::error title=pytest::Unit tests failed. Reproduce with 'make test'."
-            exit 1
-          }
+      # working-directory defaults to ".", which is right here: the app is the
+      # repository root in this layout.
+      - name: Ruff and pytest
+        uses: ./.github/actions/check

@@ -1,0 +1,80 @@
+# The CI gate for this app, as a composite action.
+#
+# The real steps live here, in the project, rather than in a workflow file.
+# GitHub starts workflows only from .github/workflows at the REPOSITORY root,
+# but a local action can sit at any path, so the workflow that calls this is a
+# stub holding nothing but the trigger and the path filter. One copy of the
+# steps, edited from the project it belongs to.
+#
+# Two callers, one file:
+#   monorepo   .github/workflows/check-interview-practice-app.yml
+#              uses: ./Generative-AI/Interview_Practice_App/.github/actions/check
+#              with: working-directory: Generative-AI/Interview_Practice_App
+#   standalone .github/workflows/check.yml
+#              uses: ./.github/actions/check        (working-directory defaults to .)
+#
+# The caller must run actions/checkout first: a local action is read from the
+# checked-out tree.
+#
+# Offline gate: the tests use fake clients, so no API key and no secrets. The
+# Streamlit app and evals.py stay out, because they make paid calls.
+name: Interview Practice App check
+description: Ruff and the offline pytest suite for the Interview Practice App.
+
+inputs:
+  working-directory:
+    description: >-
+      The project root, relative to the repository root. Leave as "." when the
+      app is itself the repository root.
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    # cache-dependency-glob is resolved from the repository root, not from
+    # working-directory, so it is spelled out in full.
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        cache-dependency-glob: ${{ inputs.working-directory }}/uv.lock
+
+    # Reads .python-version and fetches 3.11 if the runner lacks it. No
+    # setup-python step: two tools choosing an interpreter when only one of
+    # them is consulted by `uv sync` is how you get a green laptop and a red
+    # runner.
+    - name: Install the pinned interpreter
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: uv python install
+
+    - name: Build the environment from the lockfile
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        uv sync --frozen || {
+          echo "::error title=uv sync::uv.lock does not match pyproject.toml. Run 'uv lock' in the project and commit the result."
+          exit 1
+        }
+
+    # `make` targets rather than raw ruff/pytest commands, so the gate here and
+    # the gate in a terminal cannot drift. Two steps, so the Actions UI says
+    # which one failed.
+    - name: Ruff
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        make lint || {
+          echo "::error title=Ruff::Lint failed. Reproduce with 'make lint'; 'make format' fixes most of it."
+          exit 1
+        }
+
+    - name: Pytest
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        make test || {
+          echo "::error title=pytest::Unit tests failed. Reproduce with 'make test'."
+          exit 1
+        }

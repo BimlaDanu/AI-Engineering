@@ -1,13 +1,13 @@
-# Interview Practice App — CI gate, as run from the monorepo root.
+# Interview Practice App — CI gate (monorepo entry point).
 #
-# GitHub reads workflows from .github/workflows at the REPOSITORY root and
-# nowhere else, so the copy inside the project folder is inert here. This one
-# is the live gate: it filters on the project's path, runs every step from the
-# project directory, and points the uv cache at the project's own uv.lock.
+# A stub on purpose. GitHub starts workflows only from .github/workflows at the
+# repository root, but the steps themselves belong to the project, so they live
+# in a composite action inside it and this file holds only what a workflow file
+# alone can carry: the trigger, the path filter and the permissions.
 #
-# Offline gate: the tests use fake clients, so no API key and no secrets. The
-# Streamlit app and evals.py are out on purpose, they make paid calls.
-name: check (Interview Practice App)
+# Edit the gate here:
+#   Generative-AI/Interview_Practice_App/.github/actions/check/action.yml
+name: check
 
 on:
   push:
@@ -24,15 +24,12 @@ on:
 permissions:
   contents: read
 
-# Keyed on the workflow as well as the ref, so one project's push never
-# cancels a sibling project's run.
+# Keyed on a literal id rather than ${{ github.workflow }}, which is the
+# display name: several workflows here are called "check", and sharing a
+# concurrency group would make one project's push cancel another's run.
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: check-interview-practice-app-${{ github.ref }}
   cancel-in-progress: true
-
-defaults:
-  run:
-    working-directory: Generative-AI/Interview_Practice_App
 
 jobs:
   check:
@@ -41,41 +38,11 @@ jobs:
     timeout-minutes: 15
 
     steps:
+      # A local action is read from the checked-out tree, so this comes first.
       - name: Check out the repository
         uses: actions/checkout@v5
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
+      - name: Ruff and pytest
+        uses: ./Generative-AI/Interview_Practice_App/.github/actions/check
         with:
-          enable-cache: true
-          cache-dependency-glob: Generative-AI/Interview_Practice_App/uv.lock
-
-      # Reads the project's .python-version and fetches 3.11 if the runner
-      # lacks it. No setup-python step: two tools choosing an interpreter when
-      # only one of them is consulted by `uv sync` is how you get a green
-      # laptop and a red runner.
-      - name: Install the pinned interpreter
-        run: uv python install
-
-      - name: Install exactly what uv.lock pins
-        run: |
-          uv sync --frozen || {
-            echo "::error title=uv sync::uv.lock does not match pyproject.toml. Run 'uv lock' in the project and commit the result."
-            exit 1
-          }
-
-      # The project has no sync-ci/typecheck targets, so the gate is its own
-      # two: `make check` is lint + test.
-      - name: Ruff
-        run: |
-          make lint || {
-            echo "::error title=Ruff::Lint failed. Reproduce with 'make lint'; 'make format' fixes most of it."
-            exit 1
-          }
-
-      - name: Pytest
-        run: |
-          make test || {
-            echo "::error title=pytest::Unit tests failed. Reproduce with 'make test'."
-            exit 1
-          }
+          working-directory: Generative-AI/Interview_Practice_App
