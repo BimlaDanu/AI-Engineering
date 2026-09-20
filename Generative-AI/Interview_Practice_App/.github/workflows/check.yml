@@ -34,7 +34,7 @@ jobs:
 
     steps:
       - name: Check out the repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       # uv resolves the interpreter itself from .python-version and downloads
       # 3.11 if the runner lacks it. There is deliberately no setup-python
