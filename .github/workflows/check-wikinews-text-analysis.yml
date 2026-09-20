@@ -1,0 +1,70 @@
+# WikiNews Text Analysis — CI gate, as run from the monorepo root.
+#
+# The project's own copy is inert here: GitHub only reads .github/workflows
+# from the repository root. This one adds the path filter, the working
+# directory and a cache key spelled out to the project's uv.lock.
+#
+# `make models` checks the four spaCy pipelines the lock installs are loadable,
+# which is the failure this project actually hits. `make test-fast` is the
+# per-commit suite; the full corpus run is not a gate.
+name: check (WikiNews Text Analysis)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Deep-Learning/NLP/WikiNews_Text_Analysis/**"
+      - ".github/workflows/check-wikinews-text-analysis.yml"
+  pull_request:
+    paths:
+      - "Deep-Learning/NLP/WikiNews_Text_Analysis/**"
+      - ".github/workflows/check-wikinews-text-analysis.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: Deep-Learning/NLP/WikiNews_Text_Analysis
+
+jobs:
+  check:
+    name: lint · typecheck · test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: Deep-Learning/NLP/WikiNews_Text_Analysis/uv.lock
+
+      - name: Set up Python
+        run: uv python install
+
+      - name: Install dependencies
+        run: make sync-ci
+
+      - name: Check the spaCy pipelines installed
+        run: make models
+
+      - name: Lint
+        run: make lint
+
+      - name: Type check
+        run: make typecheck
+
+      - name: Test
+        run: make test-fast
+
+      - name: Report versions
+        if: always()
+        run: make versions

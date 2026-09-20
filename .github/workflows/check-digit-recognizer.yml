@@ -1,0 +1,65 @@
+# Digit Recognizer (MNIST MLP) — CI gate, as run from the monorepo root.
+#
+# The project's own copy is inert here: GitHub only reads .github/workflows
+# from the repository root. This one adds the path filter, the working
+# directory and a cache key spelled out to the project's uv.lock.
+#
+# Training is not a gate: `make train` needs the dataset and a lot of time.
+# Lint, types and the offline tests are what runs per commit.
+name: check (Digit Recognizer)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "Deep-Learning/Computer-Vision/Digit_Recognizer/**"
+      - ".github/workflows/check-digit-recognizer.yml"
+  pull_request:
+    paths:
+      - "Deep-Learning/Computer-Vision/Digit_Recognizer/**"
+      - ".github/workflows/check-digit-recognizer.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+defaults:
+  run:
+    working-directory: Deep-Learning/Computer-Vision/Digit_Recognizer
+
+jobs:
+  check:
+    name: lint, typecheck, test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          cache-dependency-glob: Deep-Learning/Computer-Vision/Digit_Recognizer/uv.lock
+
+      # Reads .python-version. requires-python is >=3.11,<3.12, so the
+      # interpreter is pinned rather than whatever the runner happens to ship.
+      - name: Install Python
+        run: uv python install
+
+      - name: Install the locked dependencies
+        run: make sync-ci
+
+      - name: Lint and format check
+        run: make lint
+
+      - name: Type check
+        run: make typecheck
+
+      - name: Tests
+        run: make test
