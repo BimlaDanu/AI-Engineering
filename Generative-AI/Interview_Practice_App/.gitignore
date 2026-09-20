@@ -1,0 +1,70 @@
+# Secrets 
+.env
+.env.*
+
+# Virtual environment
+.venv/
+venv/
+Iapp_env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.py[cod]
+*$py.class
+
+#Others
+*.key
+*.pem
+secrets/
+credentials/
+*.hdf5
+*.npz
+*.txt
+requirements.txt
+
+# Eval runner output (raw model responses — never commit)
+eval_results*.json
+
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Uploaded files / scratch
+*.pdf
+
+#Ignore
+CLAUDE.md
+jailbreak_results.csv 
+
+# Logs
+*.log
+
+# Personal learning scratch — not part of the project
+EXTRAS/
+Templates/
+Files_TEST/
+flagged/
+GRADDED_GIT_SUBMISION/ 
+
+
+# Optional generated data/models (uncomment if needed)
+data/
+models/
+outputs/
+
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/

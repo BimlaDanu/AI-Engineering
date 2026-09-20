@@ -1,0 +1,50 @@
+[project]
+name = "interview-practice-app"
+version = "1.0.0"
+description = "Streamlit interview-practice app using the OpenRouter API (OpenAI SDK): role-aware coaching, category practice, and LLM-as-a-judge feedback."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "streamlit==1.37.1",
+    "openai==1.40.6",
+    "python-dotenv==1.0.1",
+    "pypdf==4.3.1",
+    # openai 1.40.6 passes proxies= to httpx.Client, which httpx removed in
+    # 0.28. Without this cap, constructing OpenAI() raises
+    # "TypeError: Client.__init__() got an unexpected keyword argument 'proxies'".
+    "httpx>=0.27.0,<0.28",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0",
+    "ruff>=0.5",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+# The app is a set of flat modules (core.py, categories.py) rather than an
+# installed package, and pytest puts the TEST file's directory on sys.path,
+# not the repository root — so `from core import ...` resolves only when
+# something else happens to have added the root. Locally something did; on
+# CI nothing did, and all four test modules failed to import. This states the
+# requirement instead of relying on it.
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+extend-exclude = ["EXTRAS", "GRADDED_GIT_SUBMISION"]
+
+[tool.ruff.lint]
+# E/W = pycodestyle, F = pyflakes, I = import sorting,
+# UP = modern-python upgrades, B = bugbear (likely bugs)
+select = ["E", "F", "W", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+# Long prompt/data strings are intentional in the data layer and engine
+"categories.py" = ["E501"]
+"core.py" = ["E501"]
+"evals.py" = ["E501"]
+"jailbreak_experiment.py" = ["E501"]

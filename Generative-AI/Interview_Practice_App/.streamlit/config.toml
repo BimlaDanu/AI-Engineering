@@ -1,0 +1,55 @@
+# Non-secret UI and server defaults for the Interview Practice app.
+# Safe to commit. Nothing here is a credential: the OpenRouter key lives in
+# .env locally and in .streamlit/secrets.toml (git-ignored) when deployed.
+
+[server]
+# false means `streamlit run` opens a browser tab on launch. Streamlit Community
+# Cloud overrides this with its own headless setting, so it is a local nicety.
+headless = false
+# Uploads are CVs, so a few hundred KB. The default is 200 MB, which is an
+# invitation to have someone post a 200 MB file at the parser.
+maxUploadSize = 10
+enableXsrfProtection = true
+
+[browser]
+# No usage telemetry to Streamlit.
+gatherUsageStats = false
+
+[client]
+# "viewer" shows the visitor-facing ⋮ menu (Settings, Rerun, Print, About) and
+# hides the developer items. It must not be "minimal": that removes the whole
+# toolbar, and with it the only way a visitor can reach Settings → Theme to
+# switch to dark mode.
+toolbarMode = "viewer"
+
+# The app's own palette. This is what "Custom Theme" refers to in the theme
+# picker; picking Light or Dark there gives you Streamlit's own palettes
+# instead. Streamlit resolves the theme in the browser, per visitor.
+[theme]
+base = "light"
+primaryColor = "#2E6BE6"
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F1F4F9"
+textColor = "#1B2430"
+font = "sans serif"
+
+# A dark version of the palette above, written out but not enabled. The
+# [theme.light] / [theme.dark] sub-tables arrived in Streamlit 1.45 and this
+# project pins 1.37.1, where `streamlit config show` answers "theme.dark is not
+# a valid config option". To turn it on:
+#   1. Raise the streamlit pin in pyproject.toml to >= 1.45, then
+#      `uv lock && uv sync`.
+#   2. Uncomment the two blocks below and move the five [theme] keys above
+#      into [theme.light].
+#
+# [theme.light]
+# primaryColor = "#2E6BE6"
+# backgroundColor = "#FFFFFF"
+# secondaryBackgroundColor = "#F1F4F9"
+# textColor = "#1B2430"
+#
+# [theme.dark]
+# primaryColor = "#7AA2FF"
+# backgroundColor = "#11151C"
+# secondaryBackgroundColor = "#1B2430"
+# textColor = "#E8ECF3"
