@@ -1,0 +1,139 @@
+# Secrets 
+.env
+.env.*
+
+# Planning, notes and AI-assistant instructions. These stay on disk but are never
+# committed: they are working scaffolding, not part of the delivered project.
+# NOTE: .gitignore only excludes UNTRACKED files. If one of these ever shows up in
+# `git status` as tracked again, untrack it with `git rm --cached <file>` -- adding
+# it here is not enough.
+DEVELOPMENT-PLAN.md
+MATHEMATICAL-PHYSICS-DETAILS-QUANTUM-CONPUTING.md
+MODEL-AVAILABLE.md
+DEFECTS-FOUND-BY-USING-IT.md
+NEXT-PICKUP-PLAN.md
+NOTES-QAOA.md
+NOTES-VQE.md
+SESSION-TASKS.md
+AGENTS.md
+CLAUDE.md
+SKILL.md
+career-sprint-capstone.pdf
+2D-GENERALISATION-PLAN.md 
+TASK_04SEP_NEW_POINTS.md
+NOTES-APP-PAGES-DETAILS.md
+
+# Virtual environment
+.venv/
+venv/
+env/
+Iapp_env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.py[cod]
+*$py.class
+
+
+# Ruff
+.ruff_cache/
+
+# MyPy
+.mypy_cache/
+
+# Pyright
+.pyright
+
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+
+
+#Others
+*.key
+*.pem
+secrets/
+credentials/
+*.hdf5
+*.npz
+*.txt
+1_ROADMAP.md
+NOTES-APP-PAGES-DETAILS.md 
+
+# Eval runner output (raw model responses — never commit)
+eval_results*.json
+
+
+# Streamlit
+.streamlit/secrets.toml
+
+# OS / editor junk
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Uploaded files / scratch
+*.pdf
+*.md:
+# ...but every figure in the report is a committed deliverable. House rule: each
+# figure is a PDF written to reports/figures/ through src/figure_export.py, so a
+# blanket *.pdf ignore deletes the figures from every fresh clone.
+!reports/figures/*.pdf
+
+# Logs
+*.log
+
+# Personal learning scratch — not part of the project
+PROJECTS-IDEAS-CAPSTONE/
+ML-AI-Assistant/
+EXTRAS/
+Templates/
+Files_TEST/
+flagged/
+PROMPT-WORKING/
+
+# Generated state, in its own top-level folders beside data/. Everything in data/
+# is committed, by rule — anything the machine produces lives out here instead, so
+# "is this committed?" is answered by the path, not by an ignore rule.
+# See data/README.md.
+#
+# Chroma vector store (make ingest). The glob covers the copies a reindex leaves
+# behind -- chroma_db.discarded/ is 14 MB and `chroma_db/` alone does not match it.
+chroma_db/
+chroma_db.*/
+# conversation state (SQLite, agent/checkpointing.py)
+.checkpoints/
+# what the agent remembers: turns and ratings (JSONL, agent/memory.py). Never
+# committed — it is one user's conversation, and it is theirs to delete.
+.memory/
+
+# Optional generated data/models (uncomment if needed)
+models/
+outputs/
+Presentation_Capstone/
+TASKS/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Read-only prior code kept locally for reference. Not part of this project:
+# nothing here is importable and nothing here ships.
+#
+# Anchored with a leading slash, and that anchor is load-bearing: unanchored,
+# `reference/` matches a directory of that name at ANY depth, which silently
+# excluded src/physics/reference/ -- the sealed exact solvers the whole
+# experiment is graded against -- from every push.
+/reference/
+
+# Promoted knowledge base — fetched from external sources, screened, regenerable
+promoted/
