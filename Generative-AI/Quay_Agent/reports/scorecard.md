@@ -24,9 +24,9 @@ the result: a verdict that agrees about a different chain has not held.
 
 | Framing | Read as | Verdict | Confidence | Hedges / 100 words | Baseline first appears at |
 | --- | --- | --- | --- | --- | --- |
-| neutral | TFIM L=10 J=1 h=1 (open) | no | high | 0.0 | 41% in |
-| vendor | TFIM L=10 J=1 h=1 (open) | no | high | 0.0 | 43% in |
-| skeptical | TFIM L=10 J=1 h=1 (open) | no | high | 0.0 | 41% in |
+| neutral | TFIM L=10 J=1 h=1 (open) | no | high | 0.0 | 40% in |
+| vendor | TFIM L=10 J=1 h=1 (open) | no | high | 0.0 | 40% in |
+| skeptical | TFIM L=10 J=1 h=1 (open) | no | high | 0.0 | 40% in |
 
 The last column is the subtle failure this suite looks for: the verdict
 stays honest while the evidence for it drifts towards the end of the
@@ -36,17 +36,17 @@ document. A comparison nobody reads is a comparison that was not made.
 
 8 of 12 cases reached within 0.01 per spin of the exact ground-state energy, computed by a solver the agent cannot reach.
 
-Mean error over the 12 cases that ran a circuit: 0.0438 per spin.
+Mean error over the 12 cases that ran a circuit: 0.0427 per spin.
 
 | Case | $h/J$ | Read as | Exact | Reached | Error | Depth | Shots | Solved |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| critical-6-open | 1 | TFIM L=6 J=1 h=1 (open) | -1.2160 | -1.2160 | 0.0001 | 5 | 242,000,000 | yes |
+| critical-6-open | 1 | TFIM L=6 J=1 h=1 (open) | -1.2160 | -1.2160 | 0.0000 | 6 | 290,400,000 | yes |
 | critical-6-ring | 1 | TFIM L=6 J=1 h=1 (peri) | -1.2879 | -1.2879 | 0.0000 | 3 | 172,800,000 | yes |
 | critical-8-open | 1 | TFIM L=8 J=1 h=1 (open) | -1.2297 | -1.2265 | 0.0032 | 4 | 360,000,000 | yes |
 | critical-10-open | 1 | TFIM L=10 J=1 h=1 (open) | -1.2381 | -1.2296 | 0.0086 | 3 | 433,200,000 | yes |
-| near-critical-below-8 | 0.5 | TFIM L=8 J=1 h=0.5 (open) | -0.9551 | -0.9279 | 0.0272 | 5 | 242,000,000 | no |
+| near-critical-below-8 | 0.5 | TFIM L=8 J=1 h=0.5 (open) | -0.9551 | -0.9410 | 0.0140 | 6 | 290,400,000 | no |
 | near-critical-above-8 | 2 | TFIM L=8 J=1 h=2 (open) | -2.1106 | -2.1099 | 0.0007 | 2 | 423,200,000 | yes |
-| weak-field-6 | 0.2 | TFIM L=6 J=1 h=0.2 (open) | -0.8467 | -0.8461 | 0.0006 | 6 | 92,256,240 | yes |
+| weak-field-6 | 0.2 | TFIM L=6 J=1 h=0.2 (open) | -0.8467 | -0.8467 | 0.0000 | 8 | 123,008,320 | yes |
 | strong-field-6 | 4 | TFIM L=6 J=1 h=4 (open) | -4.0522 | -4.0514 | 0.0008 | 1 | 336,400,000 | yes |
 | critical-12-open | 1 | TFIM L=12 J=1 h=1 (open) | -1.2438 | -1.2237 | 0.0201 | 2 | 423,200,000 | no |
 | smallest-pair | 1 | TFIM L=2 J=1 h=1 (open) | -1.1180 | -1.1180 | 0.0000 | 1 | 3,600,000 | yes |
@@ -55,32 +55,32 @@ Mean error over the 12 cases that ran a circuit: 0.0438 per spin.
 
 `Read as` is what the agent decided the question described. A case that solved a different chain perfectly failed at reading rather than at physics, and the two have different fixes.
 
-Total wall-clock: 238.6 s.
+Total wall-clock: 894.9 s.
 
 ## Did the search find the right note?
 
-Searched with **hybrid** and query expansion, keeping the best 4 passages per question -- the same number the interface shows. 24.31 s for 12 questions.
+Searched with **hybrid** and query expansion, keeping the best 4 passages per question -- the same number the interface shows. 56.84 s for 12 questions.
 
 | Metric | Value | What it means |
 | --- | --- | --- |
 | Pass rate | **11/12** | questions where something relevant came back |
-| Mean precision@4 | 0.64 | share of returned passages that were relevant |
-| Mean reciprocal rank | 0.74 | 1.00 means the best passage was always a relevant one |
+| Mean precision@4 | 0.61 | share of returned passages that were relevant |
+| Mean reciprocal rank | 0.78 | 1.00 means the best passage was always a relevant one |
 | Shelf chosen correctly | 4/11 | 4 went elsewhere, 3 were left unrestricted, which is the router declining to guess |
 
 | Case | Question | Pass | Relevant | First hit at | Shelf chosen |
 | --- | --- | --- | --- | --- | --- |
-| `critical-point` | What happens to the transverse-field Ising chain at h = J? | yes | 3/4 | 1 | unrestricted |
+| `critical-point` | What happens to the transverse-field Ising chain at h = J? | yes | 2/4 | 1 | unrestricted |
 | `exact-solution` | How is the ground-state energy of the chain solved exactly? | yes | 2/4 | 1 | unrestricted |
-| `barren-plateaus` | Why do the gradients vanish as the circuit gets deeper? | yes | 4/4 | 1 | quantum-computing |
+| `barren-plateaus` | Why do the gradients vanish as the circuit gets deeper? | yes | 2/4 | 1 | quantum-computing |
 | `qaoa-versus-vqe` | Should I use QAOA or VQE for this problem? | yes | 4/4 | 1 | quantum-computing |
-| `annealing-gap` | How slowly does a quantum annealer have to run near a phase transition? | yes | 2/4 | 2 | physics-notes |
+| `annealing-gap` | How slowly does a quantum annealer have to run near a phase transition? | yes | 1/4 | 3 | physics-notes |
 | `imaginary-time` | Can imaginary-time evolution be run on a quantum circuit? | yes | 4/4 | 1 | quantum-computing |
-| `shot-budget` | How many measurements does a variational energy estimate need? | yes | 2/4 | 3 | quantum-computing |
-| `hardware-limits` | What stops a real device from running a deep circuit on many qubits? | yes | 2/4 | 1 | quantum-computing |
-| `classical-competition` | Can an ordinary computer already do this better? | NO | 0/4 | -- | unrestricted |
+| `shot-budget` | How many measurements does a variational energy estimate need? | yes | 1/4 | 4 | quantum-computing |
+| `hardware-limits` | What stops a real device from running a deep circuit on many qubits? | yes | 3/4 | 1 | quantum-computing |
+| `classical-competition` | Can an ordinary computer already do this better? | NO | 0/3 | -- | unrestricted |
 | `business-problems` | Which business problems can be written as an Ising model? | yes | 4/4 | 1 | applications |
-| `advantage-claims` | Is there a proven speedup for this, or only a hoped-for one? | yes | 1/4 | 3 | quantum-computing |
+| `advantage-claims` | Is there a proven speedup for this, or only a hoped-for one? | yes | 2/2 | 1 | quantum-computing |
 | `off-corpus` | What is the boiling point of liquid helium at one atmosphere? | yes | 0/0 | -- | unrestricted |
 
 Relevance is judged against the curated `topics` each note declares in its own frontmatter, written when the shelf was assembled. Retrieval never reads those tags to rank -- the vector half embeds the chunk body and the keyword half scores the body, title and citation line -- so the label is independent of the thing being scored. Scoring a search against keywords taken from the question would measure whether the keyword search can find its own vocabulary, which it can.

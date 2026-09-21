@@ -1,5 +1,5 @@
 {
-  "measured_at": "2026-09-17 20:49 UTC",
+  "measured_at": "2026-09-21 19:55 UTC",
   "graded_by_a_model": false,
   "scores": [
     {
@@ -37,8 +37,8 @@
     "cases": 12,
     "passed": 11,
     "pass_rate": 0.9167,
-    "mean_precision": 0.6364,
-    "mean_reciprocal_rank": 0.7424,
+    "mean_precision": 0.6136,
+    "mean_reciprocal_rank": 0.7803,
     "routing_rate": 0.3636,
     "routed_correctly": 4,
     "routed_elsewhere": 4,
@@ -47,7 +47,7 @@
     "searched_with": "hybrid",
     "expanded": true,
     "top_k": 4,
-    "seconds": 24.31,
+    "seconds": 56.84,
     "cases_detail": [
       {
         "name": "critical-point",
@@ -60,8 +60,8 @@
         ],
         "why": "The plainest question the corpus covers, and the one the whole project is about. A suite where this fails is a suite scoring a broken index rather than a ranking.",
         "returned": 4,
-        "relevant": 3,
-        "precision": 0.75,
+        "relevant": 2,
+        "precision": 0.5,
         "first_relevant_rank": 1,
         "reciprocal_rank": 1.0,
         "routed_correctly": false,
@@ -69,12 +69,12 @@
         "passed": true,
         "outcome": "grounded",
         "titles": [
-          "The critical point at h = J and its universal exponents",
           "The derivatives of the ground-state energy, and what each one shows",
-          "Why the transverse-field Ising chain is the standard test case",
-          "The critical point at h = J and its universal exponents"
+          "Exact solution of the transverse-field Ising chain",
+          "The critical point at h = J and its universal exponents",
+          "Quantum annealing, the adiabatic theorem, and the minimum gap"
         ],
-        "seconds": 1.455,
+        "seconds": 8.293,
         "failure": ""
       },
       {
@@ -98,12 +98,12 @@
         "passed": true,
         "outcome": "grounded",
         "titles": [
-          "Exact solution of the transverse-field Ising chain",
+          "The derivatives of the ground-state energy, and what each one shows",
           "Why the transverse-field Ising chain is the standard test case",
-          "What VQE is actually pointed at: molecules, materials, and why a spin chain is the test not the target",
-          "The derivatives of the ground-state energy, and what each one shows"
+          "Exact solution of the transverse-field Ising chain",
+          "What VQE is actually pointed at: molecules, materials, and why a spin chain is the test not the target"
         ],
-        "seconds": 1.671,
+        "seconds": 8.425,
         "failure": ""
       },
       {
@@ -115,8 +115,8 @@
         ],
         "why": "The hardest kind of case in the suite: the question shares not one content word with the term of art that names its answer. Pure keyword search cannot pass this, so it is where the vector half has to earn its place.",
         "returned": 4,
-        "relevant": 4,
-        "precision": 1.0,
+        "relevant": 2,
+        "precision": 0.5,
         "first_relevant_rank": 1,
         "reciprocal_rank": 1.0,
         "routed_correctly": true,
@@ -127,11 +127,11 @@
         "outcome": "grounded",
         "titles": [
           "Effect of barren plateaus on gradient-free optimization",
-          "Diagnosing Barren Plateaus with Tools from Quantum Optimal Control",
-          "Barren plateaus are swamped with traps",
-          "Analyzing the barren plateau phenomenon in training quantum neural networks with the ZX-calculus"
+          "Digital quantum simulation of the chain, and where Trotter error enters",
+          "A Survey of Methods for Mitigating Barren Plateaus for Parameterized Quantum Circuits",
+          "Using gradient-based algorithms to determine ground state energies on a quantum computer"
         ],
-        "seconds": 2.182,
+        "seconds": 8.405,
         "failure": ""
       },
       {
@@ -156,12 +156,12 @@
         "passed": true,
         "outcome": "grounded",
         "titles": [
-          "Diagnosing Barren Plateaus with Tools from Quantum Optimal Control",
-          "The variational quantum eigensolver, and why it is tested on this chain",
+          "On the Effects of Small Graph Perturbations in the MaxCut Problem by QAOA",
+          "Variational Quantum Algorithms for Euclidean Discrepancy and Covariate-Balancing",
           "QAOA, discretised annealing, and preparing the critical ground state",
-          "SantaQlaus: A resource-efficient method to leverage quantum shot-noise for optimization of variational quantum algorithms"
+          "QAOA-in-QAOA: solving large-scale MaxCut problems on small quantum machines"
         ],
-        "seconds": 2.126,
+        "seconds": 10.305,
         "failure": ""
       },
       {
@@ -174,10 +174,10 @@
         ],
         "why": "Two topics that meet in one physical fact -- the gap closes, so the schedule must slow -- held on notes that mostly discuss one or the other.",
         "returned": 4,
-        "relevant": 2,
-        "precision": 0.5,
-        "first_relevant_rank": 2,
-        "reciprocal_rank": 0.5,
+        "relevant": 1,
+        "precision": 0.25,
+        "first_relevant_rank": 3,
+        "reciprocal_rank": 0.3333,
         "routed_correctly": false,
         "routed_to": [
           "physics-notes"
@@ -185,12 +185,12 @@
         "passed": true,
         "outcome": "grounded",
         "titles": [
-          "Critical properties of dissipative quantum spin systems in finite dimensions",
-          "Why the transverse-field Ising chain is the standard test case",
-          "The critical point at h = J and its universal exponents",
-          "Quantum complexity across thermal phase transition in the transverse field Ising chain with long-range couplings"
+          "Monte Carlo study of the discontinuous quantum phase transition in the transverse-field Ising model on the pyrochlore lattice",
+          "Exact diagonalisation in practice, and where it stops",
+          "Quantum complexity across thermal phase transition in the transverse field Ising chain with long-range couplings",
+          "Entanglement Renyi negativity across a finite temperature transition: a Monte Carlo study"
         ],
-        "seconds": 2.619,
+        "seconds": 9.946,
         "failure": ""
       },
       {
@@ -215,11 +215,11 @@
         "outcome": "grounded",
         "titles": [
           "A Probabilistic Imaginary Time Evolution Algorithm Based on Non-unitary Quantum Circuit",
-          "Stochastic Approximation of Variational Quantum Imaginary Time Evolution",
           "Adiabatic quantum imaginary time evolution",
-          "Variational ansatz-based quantum simulation of imaginary time evolution"
+          "Stochastic Approximation of Variational Quantum Imaginary Time Evolution",
+          "Double-bracket quantum algorithms for quantum imaginary-time evolution"
         ],
-        "seconds": 2.183,
+        "seconds": 8.101,
         "failure": ""
       },
       {
@@ -232,10 +232,10 @@
         ],
         "why": "The arithmetic the application refuses configurations on. A reader checking a refusal needs the note that justifies it, so this is a case where retrieval failing costs the product its citation.",
         "returned": 4,
-        "relevant": 2,
-        "precision": 0.5,
-        "first_relevant_rank": 3,
-        "reciprocal_rank": 0.3333,
+        "relevant": 1,
+        "precision": 0.25,
+        "first_relevant_rank": 4,
+        "reciprocal_rank": 0.25,
         "routed_correctly": true,
         "routed_to": [
           "quantum-computing"
@@ -243,12 +243,12 @@
         "passed": true,
         "outcome": "grounded",
         "titles": [
+          "Simultaneous determination of multiple low-energy eigenstates of many-body systems on a superconducting quantum processor",
+          "Towards quantum simulation of spin systems using continuous variable quantum devices",
           "The variational quantum eigensolver, and why it is tested on this chain",
-          "The quantum circuit for the chain, gate by gate",
-          "Using gradient-based algorithms to determine ground state energies on a quantum computer",
-          "SantaQlaus: A resource-efficient method to leverage quantum shot-noise for optimization of variational quantum algorithms"
+          "Optimizing Quantum Circuits for Arithmetic"
         ],
-        "seconds": 2.529,
+        "seconds": 0.506,
         "failure": ""
       },
       {
@@ -263,8 +263,8 @@
         ],
         "why": "Broadly labelled on purpose: four ways of answering the same question, and a good ranking should surface any of them.",
         "returned": 4,
-        "relevant": 2,
-        "precision": 0.5,
+        "relevant": 3,
+        "precision": 0.75,
         "first_relevant_rank": 1,
         "reciprocal_rank": 1.0,
         "routed_correctly": true,
@@ -274,12 +274,12 @@
         "passed": true,
         "outcome": "grounded",
         "titles": [
-          "Where the Ising chain is physically realised, platform by platform",
-          "The variational quantum eigensolver, and why it is tested on this chain",
-          "Resource-efficient Generalized Quantum Subspace Expansion",
-          "The quantum circuit for the chain, gate by gate"
+          "Digital quantum simulation of the chain, and where Trotter error enters",
+          "The quantum circuit for the chain, gate by gate",
+          "An Implementation of the Quantum Verification of Matrix Products Algorithm",
+          "Accelerating Transpilation in Quantum Machine Learning with Haiqu's Rivet-transpiler"
         ],
-        "seconds": 2.201,
+        "seconds": 0.495,
         "failure": ""
       },
       {
@@ -293,7 +293,7 @@
           "matrix-product-states"
         ],
         "why": "The question the project's own verdict turns on. Asked in plain words with no method named, so it tests whether the search can reach four technical literatures from none of their vocabulary.",
-        "returned": 4,
+        "returned": 3,
         "relevant": 0,
         "precision": 0.0,
         "first_relevant_rank": null,
@@ -303,12 +303,11 @@
         "passed": false,
         "outcome": "grounded",
         "titles": [
-          "Which quantum speedups are real, and what that means for AI and ML",
           "Verifying a quantum computer with a model you can already solve",
-          "Critical properties of dissipative quantum spin systems in finite dimensions",
-          "Why the transverse-field Ising chain is the standard test case"
+          "Real machines these methods can be run and tested on",
+          "What VQE is actually pointed at: molecules, materials, and why a spin chain is the test not the target"
         ],
-        "seconds": 2.329,
+        "seconds": 0.525,
         "failure": ""
       },
       {
@@ -335,11 +334,11 @@
         "outcome": "grounded",
         "titles": [
           "How a business problem becomes an Ising model",
-          "General Spatial Photonic Ising Machine Based on Interaction Matrix Eigendecomposition Method",
-          "Portfolio optimisation and other financial problems as spin models",
-          "Oscillator-based Ising Machine"
+          "Guiding Principle for Minor-Embedding in Simulated-Annealing-Based Ising Machines",
+          "Which quantum speedups are real, and what that means for AI and ML",
+          "Ising machines, the commercial hardware whose native language is this model"
         ],
-        "seconds": 2.291,
+        "seconds": 1.253,
         "failure": ""
       },
       {
@@ -353,11 +352,11 @@
           "verification"
         ],
         "why": "A question about the strength of evidence rather than about physics. The application's central claim is a negative one, and it has to be able to cite the literature that supports being negative.",
-        "returned": 4,
-        "relevant": 1,
-        "precision": 0.25,
-        "first_relevant_rank": 3,
-        "reciprocal_rank": 0.3333,
+        "returned": 2,
+        "relevant": 2,
+        "precision": 1.0,
+        "first_relevant_rank": 1,
+        "reciprocal_rank": 1.0,
         "routed_correctly": false,
         "routed_to": [
           "quantum-computing"
@@ -365,12 +364,10 @@
         "passed": true,
         "outcome": "grounded",
         "titles": [
-          "Towards quantum simulation of spin systems using continuous variable quantum devices",
-          "Ground-state energies of Ising models calculated using the samples from a quantum computer that simulates short-time evolution",
-          "The variational quantum eigensolver, and why it is tested on this chain",
-          "Monte Carlo study of the discontinuous quantum phase transition in the transverse-field Ising model on the pyrochlore lattice"
+          "Which quantum speedups are real, and what that means for AI and ML",
+          "Which quantum speedups are real, and what that means for AI and ML"
         ],
-        "seconds": 2.726,
+        "seconds": 0.586,
         "failure": ""
       },
       {
@@ -400,9 +397,9 @@
     "failed": 0,
     "solved": 8,
     "measured": 12,
-    "mean_error_per_site": 0.04383987765229302,
+    "mean_error_per_site": 0.042688985335382595,
     "worst_error_per_site": 0.2931917294184023,
-    "seconds": 238.6,
+    "seconds": 894.9,
     "target_error_per_site": 0.01,
     "cases_detail": [
       {
@@ -410,13 +407,13 @@
         "ratio": 1.0,
         "read_as": "TFIM L=6 J=1 h=1 (open)",
         "exact_per_site": -1.216038301759794,
-        "reached_per_site": -1.2159841627178196,
-        "error_per_site": 5.413904197437702e-05,
-        "depth": 5,
-        "shots_spent": 242000000,
+        "reached_per_site": -1.2160316591541378,
+        "error_per_site": 6.6426056561930125e-06,
+        "depth": 6,
+        "shots_spent": 290400000,
         "beat_classical": true,
         "solved": true,
-        "seconds": 25.16,
+        "seconds": 77.51,
         "failure": ""
       },
       {
@@ -430,7 +427,7 @@
         "shots_spent": 172800000,
         "beat_classical": true,
         "solved": true,
-        "seconds": 22.07,
+        "seconds": 77.4,
         "failure": ""
       },
       {
@@ -444,7 +441,7 @@
         "shots_spent": 360000000,
         "beat_classical": false,
         "solved": true,
-        "seconds": 21.65,
+        "seconds": 89.97,
         "failure": ""
       },
       {
@@ -458,7 +455,7 @@
         "shots_spent": 433200000,
         "beat_classical": false,
         "solved": true,
-        "seconds": 22.33,
+        "seconds": 78.26,
         "failure": ""
       },
       {
@@ -466,13 +463,13 @@
         "ratio": 0.5,
         "read_as": "TFIM L=8 J=1 h=0.5 (open)",
         "exact_per_site": -0.9550740691987595,
-        "reached_per_site": -0.9278632059629071,
-        "error_per_site": 0.027210863235852423,
-        "depth": 5,
-        "shots_spent": 242000000,
+        "reached_per_site": -0.9410469852912327,
+        "error_per_site": 0.014027083907526827,
+        "depth": 6,
+        "shots_spent": 290400000,
         "beat_classical": false,
         "solved": false,
-        "seconds": 23.65,
+        "seconds": 97.98,
         "failure": ""
       },
       {
@@ -486,7 +483,7 @@
         "shots_spent": 423200000,
         "beat_classical": false,
         "solved": true,
-        "seconds": 19.32,
+        "seconds": 72.56,
         "failure": ""
       },
       {
@@ -494,13 +491,13 @@
         "ratio": 0.2,
         "read_as": "TFIM L=6 J=1 h=0.2 (open)",
         "exact_per_site": -0.8467190814209845,
-        "reached_per_site": -0.8461236694934723,
-        "error_per_site": 0.0005954119275122238,
-        "depth": 6,
-        "shots_spent": 92256240,
-        "beat_classical": false,
+        "reached_per_site": -0.8467031015317535,
+        "error_per_site": 1.5979889230965938e-05,
+        "depth": 8,
+        "shots_spent": 123008320,
+        "beat_classical": true,
         "solved": true,
-        "seconds": 22.08,
+        "seconds": 98.5,
         "failure": ""
       },
       {
@@ -514,7 +511,7 @@
         "shots_spent": 336400000,
         "beat_classical": true,
         "solved": true,
-        "seconds": 18.62,
+        "seconds": 55.88,
         "failure": ""
       },
       {
@@ -528,7 +525,7 @@
         "shots_spent": 423200000,
         "beat_classical": false,
         "solved": false,
-        "seconds": 18.27,
+        "seconds": 61.53,
         "failure": ""
       },
       {
@@ -542,7 +539,7 @@
         "shots_spent": 3600000,
         "beat_classical": true,
         "solved": true,
-        "seconds": 17.03,
+        "seconds": 85.45,
         "failure": ""
       },
       {
@@ -556,7 +553,7 @@
         "shots_spent": 352800000,
         "beat_classical": false,
         "solved": false,
-        "seconds": 15.05,
+        "seconds": 48.3,
         "failure": ""
       },
       {
@@ -570,7 +567,7 @@
         "shots_spent": 500000000,
         "beat_classical": false,
         "solved": false,
-        "seconds": 13.38,
+        "seconds": 51.51,
         "failure": ""
       }
     ]
@@ -585,8 +582,8 @@
         "verdict": "no",
         "confidence": "high",
         "hedge_rate": 0.0,
-        "words": 1127,
-        "baseline_position": 0.41467576791808874,
+        "words": 1095,
+        "baseline_position": 0.3986615678776291,
         "states_the_baseline": true,
         "failure": ""
       },
@@ -595,8 +592,8 @@
         "verdict": "no",
         "confidence": "high",
         "hedge_rate": 0.0,
-        "words": 1150,
-        "baseline_position": 0.4261013381446399,
+        "words": 1095,
+        "baseline_position": 0.3986615678776291,
         "states_the_baseline": true,
         "failure": ""
       },
@@ -605,8 +602,8 @@
         "verdict": "no",
         "confidence": "high",
         "hedge_rate": 0.0,
-        "words": 1122,
-        "baseline_position": 0.40963855421686746,
+        "words": 1095,
+        "baseline_position": 0.3986615678776291,
         "states_the_baseline": true,
         "failure": ""
       }

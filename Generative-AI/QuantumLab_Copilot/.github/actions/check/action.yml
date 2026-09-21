@@ -1,0 +1,93 @@
+# The CI gate for this project, as a composite action.
+#
+# The real steps live here, inside the project, rather than in a workflow file.
+# GitHub starts workflows only from `.github/workflows` at the *repository*
+# root, but a local action can sit at any path -- so the workflow that calls
+# this is a stub holding only what a workflow file alone can carry: the trigger,
+# the permissions and the concurrency group. One copy of the steps, edited from
+# the project they belong to.
+#
+# The caller must run `actions/checkout` first: a local action is read from the
+# checked-out tree, not fetched.
+#
+# What it runs is `make check` and nothing else -- lint, typecheck, test. No
+# eval run, no live model call: `make evals` is the refresh-the-evidence step,
+# deliberately not a per-commit gate, because it is billable and needs the
+# network.
+#
+# No OPENROUTER_API_KEY is provided, and that omission is a test in itself: the
+# suite passes with two skips. The model, the vector store, the tools and the
+# memory are all injectable, so the graph and the physics need nothing. The two
+# skips are the eval suite's pass-count assertion -- its retrieval embeds
+# queries through the gateway, so with no key the two knowledge cases refuse
+# honestly and it scores 24 of 26 -- and a worker-count case that needs
+# configuration to read.
+#
+# The exact test count used to be written in this comment and went stale on the
+# next commit, which is the whole argument against putting one here: a number
+# nobody updates is a line that lies. `make check` prints the real one.
+#
+# The first run of this gate earned its place by finding three things that
+# passed only on a machine with a key in scope. If a fourth ever appears, it
+# goes red here instead of on somebody else's fresh checkout.
+name: QuantumLab Copilot check
+description: Lint, typecheck and the offline pytest suite for QuantumLab Copilot.
+
+inputs:
+  working-directory:
+    description: >-
+      The project root, relative to the repository root. Leave as "." when this
+      project is itself the repository root.
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    # cache-dependency-glob is resolved from the repository root, not from
+    # working-directory, so it is spelled out through the input.
+    - name: Install uv
+      uses: astral-sh/setup-uv@v6
+      with:
+        enable-cache: true
+        cache-dependency-glob: ${{ inputs.working-directory }}/uv.lock
+
+    # Reads .python-version. The pin is load-bearing rather than cosmetic:
+    # uv.lock resolves numpy 2.4.6 below 3.12 and 2.5.2 at or above it, and
+    # 2.5.2's stubs are 3.12 syntax that mypy -- targeting 3.11 -- cannot
+    # parse. The interpreter and the mypy target have to agree. No
+    # setup-python step, because two tools choosing an interpreter when only
+    # one of them is consulted by `uv sync` is how you get a green laptop and
+    # a red runner.
+    - name: Install the pinned interpreter
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: uv python install
+
+    - name: Install exactly what uv.lock pins
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        make sync-ci || {
+          echo "::error title=uv sync::uv.lock does not match pyproject.toml. Run 'uv lock' in the project and commit the result."
+          exit 1
+        }
+
+    # Printed so a green run says which interpreter and which numpy it was
+    # green on, rather than leaving that to be inferred.
+    - name: Report the environment under test
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: make -s versions
+
+    # `make check` and not its three targets spelled out separately, so that
+    # what CI runs and what the README tells a reader to run are the same
+    # string. It stops at the first failure, exactly as it does locally.
+    - name: make check
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        make check || {
+          echo "::error title=make check::The gate failed. Reproduce with 'make check'; 'make check-fast' is the same gate without the slow tests."
+          exit 1
+        }
