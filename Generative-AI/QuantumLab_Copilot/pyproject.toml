@@ -1,0 +1,113 @@
+[project]
+name = "quantumlab-copilot"
+version = "0.1.0"
+description = "An AI agent that plans, runs, and independently verifies quantum many-body simulations."
+readme = "README.md"
+requires-python = ">=3.11"
+
+# Runtime dependencies. Lower bounds only — the exact resolved versions are
+# pinned in uv.lock, which IS committed. That is the modern equivalent of a
+# frozen requirements.txt and is what makes the build reproducible.
+dependencies = [
+    # --- agent orchestration ---
+    "langgraph>=0.2.60",
+    "langgraph-checkpoint-sqlite>=2.0.0",
+    "langchain>=0.3.13",
+    "langchain-core>=0.3.28",
+    "langchain-openai>=0.2.14",          # OpenRouter speaks the OpenAI protocol
+    "langsmith>=0.2.0",                   # observability (H2)
+    # --- retrieval (H1) ---
+    "langchain-chroma>=0.1.4",
+    "langchain-text-splitters>=0.3.4",
+    "chromadb>=0.5.20",
+    "arxiv>=2.1.3",                       # external API tool (M3)
+    # --- physics core: deterministic, zero LLM ---
+    # Exact diagonalisation, transfer matrix, quantum-to-classical mapping and
+    # the VITA Monte Carlo sampler are all plain array code. No quantum SDK is
+    # needed; Qiskit returns only if the capstone adds real circuit execution.
+    "numpy>=1.26",
+    "scipy>=1.12",
+    "matplotlib>=3.9",
+    # --- config, validation, resilience ---
+    "pydantic>=2.9",
+    "pydantic-settings>=2.6",
+    "tenacity>=9.0",                      # retry/backoff for model + API calls
+    # --- user interface ---
+    "streamlit>=1.40",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6.0",
+    "ruff>=0.8",
+    "mypy>=1.13",
+]
+# Heavy, only needed for the offline evaluation run (H3). Install with:
+#   uv sync --group evals
+evals = [
+    "ragas>=0.2.8",
+]
+
+[tool.uv]
+# This is an application, not a library: do not try to build/install the
+# project itself, just manage its dependencies. `src` is imported from the
+# repository root.
+package = false
+
+# ─────────────────────────── Ruff ───────────────────────────
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # import sorting
+    "B",    # bugbear (likely bugs)
+    "UP",   # pyupgrade (modern syntax)
+    "N",    # PEP 8 naming
+    "D",    # pydocstyle — every public function carries a real docstring
+    "ANN",  # missing type annotations on public boundaries
+    "RUF",
+]
+ignore = [
+    "D107",    # __init__ docstring — covered by the class docstring
+    "D203",    # incompatible with D211
+    "D213",    # incompatible with D212
+    "ANN401",  # allow Any where genuinely needed
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+# Tests document themselves through their names; annotations add noise there.
+"tests/**" = ["D100", "D103", "ANN"]
+
+# ─────────────────────────── pytest ───────────────────────────
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q --strict-markers"
+markers = [
+    "slow: physics runs that take more than a second",
+]
+
+# ─────────────────────────── mypy ───────────────────────────
+[tool.mypy]
+python_version = "3.11"
+files = ["src", "tests"]
+warn_unused_configs = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+
+[[tool.mypy.overrides]]
+# These ship no type stubs, and installing stub packages is out of scope here.
+# Untyped third-party imports must not block type-checking our own code.
+module = ["scipy.*", "chromadb.*", "arxiv.*", "streamlit.*", "matplotlib.*"]
+ignore_missing_imports = true
