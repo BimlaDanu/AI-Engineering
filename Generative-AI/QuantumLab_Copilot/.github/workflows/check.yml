@@ -1,0 +1,47 @@
+# QuantumLab Copilot -- CI gate, run on every push and pull request.
+#
+# A stub on purpose. GitHub starts workflows only from `.github/workflows` at
+# the *repository* root and nowhere else -- a `.github` directory further down
+# is an ordinary folder to it. So this file holds only what a workflow file
+# alone can carry, and the steps themselves live in a local composite action
+# inside this project, linked directly below.
+#
+# Edit the gate here:
+#   .github/actions/check/action.yml
+#
+# The path is relative to this project, which is what makes it portable: pushed
+# as a repository of its own, the project is the repository root and
+# `./.github/actions/check` resolves with `working-directory` left at its
+# default of ".". Nothing in this file names a parent directory, so nothing in
+# it has to change when the project moves.
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push supersedes the run in flight for the same ref.
+concurrency:
+  group: check-quantumlab-copilot-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: lint · typecheck · test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      # A local action is read from the checked-out tree, so this comes first.
+      - name: Check out the repository
+        uses: actions/checkout@v5
+
+      # working-directory defaults to ".", which is right here: this project is
+      # the repository root in this layout.
+      - name: Lint, typecheck and test
+        uses: ./.github/actions/check
