@@ -1,6 +1,6 @@
 # ⚛️ Quay — a feasibility agent for quantum simulation
 
-[![check](https://github.com/TuringCollegeSubmissions/bidanu-AE.CAP.AFA.1.1/actions/workflows/check.yml/badge.svg)](https://github.com/TuringCollegeSubmissions/bidanu-AE.CAP.AFA.1.1/actions/workflows/check.yml)
+[![check](https://github.com/BimlaDanu/AI-Engineering/actions/workflows/Generative-AI/Quay_Agent/.github/workflows/check.yml/badge.svg?branch=main)](https://github.com/BimlaDanu/AI-Engineering/tree/main/Generative-AI/Quay_Agent/.github/workflows/check.yml)
 
 
 <p align="center">

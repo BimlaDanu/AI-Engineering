@@ -1,6 +1,6 @@
 # ⚛️ QuantumLab Copilot — *the answer, and the proof that it is right*
 
-[![check](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.4.6/actions/workflows/check.yml/badge.svg)](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.4.6/actions/workflows/check.yml)
+[![check](https://github.com/BimlaDanu/AI-Engineering/actions/workflows/check-quantumlab-copilot.yml/badge.svg?branch=main)](https://github.com/BimlaDanu/AI-Engineering/actions/workflows/check-quantumlab-copilot.yml)
 
 QuantumLab Copilot is a **domain-specialised AI agent** for the one-dimensional
 transverse-field Ising model (TFIM). Instead of producing a plausible-looking number, it
@@ -1026,10 +1026,26 @@ and takes under a minute: a shortcut while editing, never the gate.
 - **`pythonpath = ["."]`** is what makes `from src…` resolve — no editable install, no
   `PYTHONPATH`, no `conftest.py` needed for imports.
 
-**And CI runs that same gate** —
-[`.github/workflows/check.yml`](.github/workflows/check.yml) on every push and pull request:
+**And CI runs that same gate** on every push and pull request:
 `uv python install` (the pinned interpreter), `make sync-ci`, `make check`. One string, so
-what CI runs and what this page tells you to run cannot drift apart.
+what CI runs and what this page tells you to run cannot drift apart. The badge at the top of
+this page is the last [`check`](https://github.com/BimlaDanu/AI-Engineering/blob/main/.github/workflows/check-quantumlab-copilot.yml) run on `main`; click
+it for the run history and the logs.
+
+The steps live in [`.github/actions/check/action.yml`](.github/actions/check/action.yml), a
+composite action inside this project, because GitHub starts workflows only from
+`.github/workflows` at the *repository* root and a `.github` directory below that is just an
+ordinary folder to it. There are two entry points:
+
+| Entry point | Lives at | What it does |
+|---|---|---|
+| [`check-quantumlab-copilot.yml`](https://github.com/BimlaDanu/AI-Engineering/blob/main/.github/workflows/check-quantumlab-copilot.yml) | monorepo root | The run the badge reports. Adds a `paths` filter and a `working-directory` pointing back here, and still spells its steps out in full |
+| [`.github/workflows/check.yml`](.github/workflows/check.yml) | here | A stub: calls `./.github/actions/check`, with `working-directory` defaulting to `.`. What runs when this project is pushed as a repository of its own |
+
+The project stub carries only the workflow-level keys a composite action cannot hold: the
+trigger, `permissions` and the concurrency group. Its path names no parent directory, so it
+resolves unchanged wherever the project sits. Every project in the monorepo has its own root
+stub and its own badge, scoped by `paths`, so no project triggers or cancels another's run.
 
 Two things about it are deliberate:
 

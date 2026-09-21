@@ -1,6 +1,6 @@
 # 🧠 Synapse: *where AI, ML & deep learning connect*
 
-[![CI: lint, format, tests](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml/badge.svg?branch=main)](https://github.com/TuringCollegeSubmissions/bidanu-AE.AFA.3.5/actions/workflows/check.yml)
+[![check](https://github.com/BimlaDanu/AI-Engineering/actions/workflows/check-ai-ml-assistant.yml/badge.svg?branch=main)](https://github.com/BimlaDanu/AI-Engineering/actions/workflows/check-ai-ml-assistant.yml)
 
 [![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
 [![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://docs.streamlit.io/)
@@ -93,9 +93,12 @@ Optional `.env` keys: `GOOGLE_API_KEY` for the native Gemini model, and
 | `make mcp-serve` | Optional. Publish Synapse's own tools as an MCP server |
 | `make clean` | Remove caches, leaving `.venv` alone |
 
-`make check` is exactly what CI runs, on every push to `main` and every pull request
-([`check.yml`](.github/workflows/check.yml)). It needs no secrets, because the suite is fully
-offline with a fake LLM, KB and tools.
+`make check` is exactly what CI runs, on every push to `main` and every pull request that
+touches this directory
+([`check-ai-ml-assistant.yml`](https://github.com/BimlaDanu/AI-Engineering/blob/main/.github/workflows/check-ai-ml-assistant.yml),
+the badge at the top). This directory keeps its own [`check.yml`](.github/workflows/check.yml) with
+the same steps, for when Synapse is pushed as a repository of its own. Neither needs a secret,
+because the suite is fully offline with a fake LLM, KB and tools.
 
 ---
 

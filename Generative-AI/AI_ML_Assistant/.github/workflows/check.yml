@@ -1,9 +1,17 @@
 # ═══════════════════════════════════════════════════════════
-#  Synapse — CI gate
+#  Synapse — CI gate (standalone entry point).
 #
-#  Runs `make check` itself (lint → format → tests) rather than re-spelling
-#  it, so the gate here and the gate in a developer's terminal cannot drift —
-#  an earlier copy of these steps had already lost `conftest.py` from the lint
+#  This copy is what runs when Synapse is pushed as a repository of its own,
+#  where the project is the repository root. Inside the AI-Engineering monorepo
+#  it is inert, because GitHub reads .github/workflows only from the repository
+#  root; there the entry point is .github/workflows/check-ai-ml-assistant.yml at
+#  that root, which adds the path filter and the working directory and is what
+#  the README badge points at. Keep the two in step — same steps, same action
+#  majors — since only one of them is ever the one being watched.
+#
+#  Runs `make check` itself (lint → format → tests) rather than re-spelling it,
+#  so the gate here and the gate in a developer's terminal cannot drift — an
+#  earlier copy of these steps had already lost `conftest.py` from the lint
 #  target. Everything runs offline: the tests inject fake LLMs/KB/tools, so NO
 #  API keys or secrets are needed — never add them to this workflow.
 #
@@ -22,13 +30,16 @@ on:
   pull_request:
   workflow_dispatch: # lets you re-run the gate by hand from the Actions tab
 
-# A newer push to the same branch cancels the older, still-running check.
-concurrency:
-  group: check-${{ github.ref }}
-  cancel-in-progress: true
-
 permissions:
   contents: read
+
+# A newer push to the same branch cancels the older, still-running check. Keyed
+# on a literal id rather than ${{ github.workflow }}, which is the display name:
+# several workflows in the monorepo are called "check", and a shared concurrency
+# group would let one project's push cancel another's run.
+concurrency:
+  group: check-ai-ml-assistant-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   check:
@@ -42,9 +53,9 @@ jobs:
       UV_PYTHON: "3.11"
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.11"
 
