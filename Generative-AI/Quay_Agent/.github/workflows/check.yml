@@ -1,0 +1,71 @@
+# Quay Agent — CI gate (standalone entry point).
+#
+# This copy is what runs when Quay is pushed as a repository of its own, where
+# the project is the repository root. Inside the AI-Engineering monorepo it is
+# inert, because GitHub reads .github/workflows only from the repository root;
+# there the entry point is .github/workflows/check-quay-agent.yml at that root,
+# which adds the path filter and the working directory.
+#
+# The README badge names this file, so it reports a status once the project is
+# pushed as its own repository.
+#
+# Both entry points run `make check` -- lint, typecheck, test, doctest -- and
+# nothing else. No eval run, no live model call: `make evals` is the
+# refresh-the-evidence step, deliberately not a per-commit gate, because it is
+# billable and needs the network.
+#
+# No OPENROUTER_API_KEY is provided, and that omission is a test in itself: the
+# whole suite passes, with nothing skipped. The model, the vector store, the
+# tools and the memory are all injectable, so the graph and the physics need
+# nothing from a gateway.
+name: check
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+# A new push supersedes the run in flight for the same ref.
+concurrency:
+  group: check-quay-agent-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: lint · typecheck · test
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      # Reads .python-version. The pin is load-bearing rather than cosmetic:
+      # uv.lock resolves numpy 2.4.6 below 3.12 and 2.5.2 at or above it, and
+      # 2.5.2's stubs are 3.12 syntax that mypy -- targeting 3.11 -- cannot
+      # parse. The interpreter and the mypy target have to agree.
+      - name: Install the pinned interpreter
+        run: uv python install
+
+      - name: Install exactly what uv.lock pins
+        run: make sync-ci
+
+      # Printed so a green run says which interpreter and which numpy it was
+      # green on, rather than leaving that to be inferred.
+      - name: Report the environment under test
+        run: make -s versions
+
+      # `make check` and not its targets spelled out separately, so that what
+      # CI runs and what the README tells a reader to run are the same string.
+      - name: make check
+        run: make check
