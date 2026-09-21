@@ -1,0 +1,58 @@
+# The window's own colours, so the interface and its figures agree.
+#
+# Everything the application draws uses one palette, set in `src/ui/figures.py`:
+# ACCENT #4c6ef5 for the coupling, WARM #e8590c for the field, #2f9e44 for the
+# disordered phase. Before this file existed the pages were Streamlit's stock red
+# and the figures inside them were blue and orange, so every panel read as a chart
+# pasted into somebody else's product. The theme is the cheapest way to make one
+# thing out of two, and it changes no page, no control and no name.
+#
+# Only colour and font live here. Nothing behavioural: a setting that changes what
+# the application *does* belongs in `src/settings.py`, where it can be tested.
+#
+# Written as a shared table plus a light and a dark one, which is what makes the
+# appearance control in the toolbar's own menu do something. A single `[theme]`
+# table with `base = "light"` in it is a theme with no other mode to offer, so the
+# menu had a dark option that changed nothing -- and the palette is a light one, so
+# leaving the option there and unwired was the worst of the three possibilities.
+# The figures were built for this: every one of them is drawn transparent, with a
+# mid-grey for the ticks and spines, so the same drawing reads on either ground.
+
+[theme]
+# The parts that are the same in both modes: shape, type, and the accent, which is
+# the one colour this palette shares with the figures.
+primaryColor = "#4c6ef5"
+font = "sans-serif"
+headingFont = "sans-serif"
+codeFont = "monospace"
+showWidgetBorder = true
+baseRadius = "0.6rem"
+buttonRadius = "0.6rem"
+
+[theme.light]
+backgroundColor = "#FFFFFF"
+secondaryBackgroundColor = "#F4F6FB"
+textColor = "#1F2933"
+linkColor = "#3b5bdb"
+codeBackgroundColor = "#F4F6FB"
+borderColor = "#E3E8F2"
+
+[theme.dark]
+# Not Streamlit's stock dark, which is a blue-black of its own: these are the light
+# palette's own hues taken down, so the accent still belongs to the page. The text
+# is off-white rather than white and the ground is off-black rather than black,
+# because pure white on pure black is the pairing that makes long prose vibrate.
+backgroundColor = "#12161F"
+secondaryBackgroundColor = "#1A2030"
+textColor = "#E4E8F1"
+linkColor = "#91A7FF"
+codeBackgroundColor = "#1A2030"
+borderColor = "#2C3446"
+# Lifted for the darker ground. #4c6ef5 is a fine accent on white and reads as
+# navy on this, which loses the one colour tying the interface to its figures.
+primaryColor = "#748FFC"
+
+[server]
+# The corpus and the index are read from disk on every rerun in development; this
+# keeps a saved edit from being picked up mid-answer.
+runOnSave = false
