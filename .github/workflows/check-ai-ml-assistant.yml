@@ -10,7 +10,7 @@
 # the run before a single step logs anything.
 #
 # Offline gate: the tests inject fake LLMs, KB and tools. Never add secrets.
-name: check (AI ML Assistant)
+name: check
 
 on:
   push:

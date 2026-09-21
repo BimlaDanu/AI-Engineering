@@ -7,7 +7,7 @@
 #
 # No OPENROUTER_API_KEY, and that omission is part of the test: the suite
 # passes with skips because the model, store, tools and memory are injectable.
-name: check (QuantumLab Copilot)
+name: check
 
 on:
   push:
