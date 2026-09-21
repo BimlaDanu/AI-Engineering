@@ -4,10 +4,8 @@
 # the project is the repository root. Inside the AI-Engineering monorepo it is
 # inert, because GitHub reads .github/workflows only from the repository root;
 # there the entry point is .github/workflows/check-quay-agent.yml at that root,
-# which adds the path filter and the working directory.
-#
-# The README badge names this file, so it reports a status once the project is
-# pushed as its own repository.
+# which adds the path filter and the working directory, and is the one the
+# README badge names -- GitHub draws a badge only for a workflow it runs.
 #
 # Both entry points run `make check` -- lint, typecheck, test, doctest -- and
 # nothing else. No eval run, no live model call: `make evals` is the

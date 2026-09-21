@@ -2,6 +2,23 @@
 
 [![check](https://github.com/BimlaDanu/AI-Engineering/actions/workflows/check-quantumlab-copilot.yml/badge.svg?branch=main)](https://github.com/BimlaDanu/AI-Engineering/actions/workflows/check-quantumlab-copilot.yml)
 
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11%2B-3776AB?logo=python&logoColor=white)](https://www.python.org/downloads/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-FF4B4B?logo=streamlit&logoColor=white)](https://docs.streamlit.io/)
+[![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?logo=langchain&logoColor=white)](https://python.langchain.com/docs/introduction/)
+[![LangGraph](https://img.shields.io/badge/LangGraph-1C3C3C)](https://langchain-ai.github.io/langgraph/)
+[![LangSmith](https://img.shields.io/badge/LangSmith-1C3C3C)](https://docs.smith.langchain.com/)
+[![Chroma](https://img.shields.io/badge/Chroma-FF6F61)](https://docs.trychroma.com/)
+[![OpenRouter](https://img.shields.io/badge/OpenRouter-6566F1?logo=openrouter&logoColor=white)](https://openrouter.ai/docs/quickstart)
+[![NumPy](https://img.shields.io/badge/NumPy-4DABCF?logo=numpy&logoColor=white)](https://numpy.org/doc/stable/)
+[![SciPy](https://img.shields.io/badge/SciPy-8CAAE6?logo=scipy&logoColor=white)](https://docs.scipy.org/doc/scipy/)
+[![Matplotlib](https://img.shields.io/badge/Matplotlib-11557C)](https://matplotlib.org/stable/)
+[![Pydantic](https://img.shields.io/badge/Pydantic-E92063?logo=pydantic&logoColor=white)](https://docs.pydantic.dev/)
+[![arXiv](https://img.shields.io/badge/arXiv-B31B1B?logo=arxiv&logoColor=white)](https://info.arxiv.org/help/api/index.html)
+[![uv](https://img.shields.io/badge/uv-DE5FE9?logo=uv&logoColor=white)](https://docs.astral.sh/uv/)
+[![Ruff](https://img.shields.io/badge/Ruff-D7FF64?logo=ruff&logoColor=black)](https://docs.astral.sh/ruff/)
+[![mypy](https://img.shields.io/badge/mypy-1F5082)](https://mypy.readthedocs.io/en/stable/)
+[![pytest](https://img.shields.io/badge/pytest-0A9EDC?logo=pytest&logoColor=white)](https://docs.pytest.org/)
+
 QuantumLab Copilot is a **domain-specialised AI agent** for the one-dimensional
 transverse-field Ising model (TFIM). Instead of producing a plausible-looking number, it
 **decides what work the question needs, runs that work in tested Python, computes every
@@ -46,7 +63,8 @@ up — which is why the corpus has a whole shelf on the quantum-computing uses, 
 where the model shows up outside physics (portfolio optimisation, routing, scheduling: any
 NP-hard problem written as an Ising cost function).
 
-Built with **Python 3.11+, Streamlit, LangChain 1.x, LangGraph, Chroma, NumPy and SciPy**.
+Each badge at the top links to that tool's documentation, and the
+[Technology stack](#technology-stack) section says what every one of them is doing here.
 Developed for the Turing College Sprint 4 programme, against the assignment brief in
 [135.md](135.md).
 

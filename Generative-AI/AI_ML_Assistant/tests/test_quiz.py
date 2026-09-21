@@ -200,6 +200,12 @@ def test_generate_reports_an_unavailable_model_instead_of_crashing(
 
     monkeypatch.setattr(quiz_page, "get_llm", _no_provider)
 
+    # The page returns before the button when there is no key, so without this the test
+    # passes only on a machine with a populated .env and fails on CI, which has no secrets
+    # by design. Stubbed here rather than left to the environment: the point of the test is
+    # the model being unreachable, not the key being absent.
+    monkeypatch.setattr(quiz_page, "openrouter_api_key", lambda: "sk-or-test")
+
     at = AppTest.from_string(_QUIZ_APP, default_timeout=60).run()
     generate = next(b for b in at.button if "Generate quiz" in b.label)
     generate.click().run()
